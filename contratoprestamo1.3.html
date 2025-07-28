@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contrato de Promesa de Venta</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 30px;
+      background-color: #eef4f7; /* Fondo azul-gris claro */
+      color: #333;
+      line-height: 1.6; /* Interlineado por defecto */
+    }
+    .container {
+      max-width: 800px; /* Ancho típico para un documento legal */
+      margin: 20px auto;
+      background-color: #ffffff;
+      padding: 40px; /* Más padding para aspecto formal */
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border: 1px solid #dcdcdc; /* Borde sutil */
+    }
+    h1 {
+      text-align: center;
+      color: #0056b3;
+      margin-bottom: 20px;
+      font-size: 2.5em;
+      border-bottom: 3px solid #0056b3;
+      padding-bottom: 15px;
+      text-transform: uppercase; /* Títulos en mayúsculas */
+    }
+    p {
+      text-align: justify; /* Justificar el texto para apariencia legal */
+      margin-bottom: 15px;
+      line-height: 1.8; /* Aumentar interlineado para legibilidad en texto justificado */
+      text-indent: 30px; /* Sangría en la primera línea */
+    }
+    /* Estilo específico para párrafos que no necesitan sangría, como la fecha final o títulos */
+    p.no-indent {
+        text-indent: 0;
+        text-align: left; /* O right, si aplica */
+    }
+
+    .signature-section {
+      margin-top: 50px;
+      text-align: center;
+    }
+    .signature-blocks-container {
+      display: flex; /* Usar flexbox para alinear firmas */
+      flex-wrap: wrap; /* Permitir que las firmas pasen a la siguiente línea */
+      justify-content: space-around; /* Distribuir espacio entre firmas */
+      gap: 40px; /* Espacio entre bloques de firma */
+      margin-top: 30px;
+    }
+    .signature-block {
+      flex: 1 1 280px; /* Cada bloque ocupa al menos 280px y crece/encoge */
+      max-width: 45%; /* Máximo dos por fila */
+      margin-bottom: 30px; /* Espacio entre filas de firmas */
+      text-align: center;
+    }
+    .signature-line {
+      border-bottom: 1px solid #000;
+      width: 80%; /* Ancho de la línea de firma */
+      margin: 0 auto 10px auto; /* Centrar línea y espacio debajo */
+      height: 1px; /* Asegura que la línea sea visible */
+    }
+    .signature-name {
+      font-weight: bold;
+      margin-top: 5px;
+      text-transform: uppercase;
+    }
+    .signature-role { /* Para el rol debajo del nombre */
+        font-size: 0.9em;
+        color: #555;
+    }
+
+    .message-display {
+      color: #0056b3;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.2em;
+      background-color: #e0f2f7;
+      border: 1px solid #a7c7e0;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+    .message-display.error {
+      color: #d9534f;
+      background-color: #f2dede;
+      border-color: #ebccd1;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px dashed #dcdcdc;
+        color: #777;
+        font-size: 0.85em;
+    }
+
+    /* Print Specific Styles */
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        font-size: 11pt;
+        line-height: 1.5;
+      }
+      .container {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 15mm;
+        max-width: none;
+        margin: 0;
+        border: none;
+      }
+      p {
+          text-indent: 0; /* Quitar sangría en impresión si no se desea */
+          margin-bottom: 10px; /* Ajustar margen para impresión */
+      }
+      p.no-indent {
+          text-indent: 0;
+      }
+      .signature-section {
+          margin-top: 15mm;
+      }
+      .signature-block {
+          flex: 1 1 auto;
+          max-width: 48%;
+          margin-bottom: 15mm;
+      }
+      footer {
+          display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CONTRATO DE PROMESA DE VENTA</h1>
+    
+    <p>Nosotros: CARMEN NOHEMI MENCIAS CARIAS, mayor de edad, Casada, hondureña, Comerciante, con número de identidad 0105-1953-00040, y con domicilio en El Municipio de La Másica, Departamento de Atlántida; actuando en mi condición de Gerente de la Empresa Denominada INVERSIONES DIVERSAS FLORIDA, S. de R.L. según instrumento numero 167 otorgado en fecha 12 de Septiembre del año 2018, antes los oficios del Abogado y Notario Público José Adonay Padilla Isaula, y quien de aquí en adelante será denominada como LA PROMINENTE VENDEDORA. Y <span id="datoCompradorContrato"></span>, hemos convenido en celebrar; como en efecto celebramos, el presente Contrato de Promesa de Venta, el cual se Regirá supletoriamente, por la legislación vigente de la República de Honduras que le sea aplicable y especialmente por las siguientes cláusulas y condiciones:</p>
+
+    <p>PRIMERA: La Prominente Vendedora, en la condición con que actúa, manifiesta que su representada es dueña de un lote de terreno el cual se describe así: ubicado en <span id="datosLotificacionContrato"></span> y del cual se <span id="identificacionLotesVentaContrato"></span> <span id="datosLotesVentaContrato"></span></p>
+
+    <p>SEGUNDO: LA PROMINENTE VENDEDORA, en la condición con que actúa por tenerlo así convenido, al precio y condiciones que se establecen en las cláusulas siguientes, por este acto da en promesa de Venta AL PROMINENTE COMPRADOR (a), el lote de terreno descrito en la cláusula precedente, quien lo recibe a su entera satisfacción.</p>
+
+    <p>TERCERO: Continua manifestando LA PROMINENTE VENDEDORA, en la condición con que actúa, que el contrato de promesa de compraventa a ser suscrito, en ejecución de esta promesa de venta deberá incluir las condiciones restrictivas relacionadas con las obligaciones descritas en las cláusulas sub-siguientes de este contrato; asimismo, si por cualquier causa, el lote de terreno descrito en la cláusula primera de este contrato resultare con un área menor a la estipulada en la misma, es convenido y acepto expresamente por las partes que la menor cabida no dará lugar a la disolución de este contrato, o en su caso, del contrato de compraventa, si este ya se hubiese suscrito, pactándose que en dicha eventualidad será su obligación restituir al PROMINENTE COMPRADOR (a), sin pago de ningún valor en concepto perjuicios o intereses y al precio estipulado en los metros cuadrados o su equivalente en varas cuadradas que resulte de esta transacción, el valor equivalente al número de metros o de varas cuadradas que este en la imposibilidad de entregar al PROMINENTE COMPRADOR (a); del mismo modo, si el área entregada resultare mayor a la estipulada, El PROMINENTE COMPRADOR (a) se obliga expresamente a pagar a la Prominente Vendedora la diferencia por la cual resultare deudor, al precio que por metros o vara cuadrada se haya estipulado;</p>
+
+    <p>CUARTA: El precio de la venta total del lote de terreno será por TRESCIENTOS OCHENTA Y CUATRO MIL LEMPIRAS EXACTOS (LPS 384,000.00), de los cuales en este acto El PROMINENTE COMPRADOR (a) hace entrega a la PROMINENTE VENDEDORA, en la condición con que actúa, la cantidad de CINCO MIL LEMPIRAS EXACTOS (LPS 5,000.00), en calidad de PRIMA quedando un saldo pendiente de TRESCIENTOS SETENTA Y NUEVE MIL LEMPIRAS EXACTOS (LPS 379,000.00) y pagara la cantidad en cuotas nivelas de DOS MIL SEISCIENTOS TREINTA Y UN LEMPIRAS CON NOVENTA Y CUATRO CENTAVOS (LPS: 2,631.94) durante CIENTO CUARENTA Y CUATRO MESES, contados a partir de la firma del presente contrato. El PROMINENTE COMPRADOR (a) podrá realizar en el momento que crea oportuno PAGOS PARA ABONAR A CAPITAL. </p>
+
+    <p>-QUINTO El plazo para el cumplimiento en cuanto a la transferencia de dominio en escritura pública o suscripción de la compraventa se establecerá por los Abogados del BUFETE LUJAN Y ASOCIADOS, encargados del Proyecto, hasta la fecha en que se encuentre pagado la totalidad de la deuda por El PROMINENTE COMPRADOR (a), corriendo por cuenta de El PROMINENTE COMPRADOR (a), los gastos de honorarios profesionales, timbres de contratación, impuestos de registro, impuesto sobre tradición, constancias catastrales, para obtener su escritura de compra y venta.</p>
+
+    <p>-SEXTA: Durante el tiempo en que El PROMINENTE COMPRADOR (a) no haya suscrito la escritura de compraventa, y pasado seis meses tendrá el derecho de ocupar el inmueble y a efectuar mejoras y construcciones en el mismo; sin embargo, la edificación de cualquier mejora o construcción, deberá hacerse con permiso previo de la autoridad municipal correspondiente y con conocimiento de la PROMINENTE VENDEDORA, en la condición con que actúa. </p>
+
+    <p>SEPTIMA: Estará a Cargo de El PROMINENTE COMPRADOR (a): A) Gestionar personalmente la instalación de los Servicios Públicos al lote prometido en venta.-B) Pagar puntualmente las tasas por servicios públicos como alumbrado eléctrico, agua potable, contribución por mejoras y demás servicios que recibiere, así como el pago del impuesto sobre bienes inmuebles y las demás cargas municipales que afecten el inmueble desde el momento de la suscripción del contrato.-C) Aceptar la servidumbre de paso de agua de lluvia, acueductos, electro ductos, ductos o cables telefónicos y demás similares que por razones topográficas deban pasar por el sub-suelo o el espacio aéreo de la propiedad.-D) Se compromete a que la tierra y demás materiales similares como desechos de construcción no sean arrojados en ninguna parte de la urbanización. Se prohíbe al PROMINENTE COMPRADOR (a) a realizar actividades como batida de mezcla de concreto, mortero, repello u otro material necesario para la construcción, en o sobre las aceras, áreas verdes, calles, callejones sanitarios, lotes adyacentes, o cualquier lugar fuera del destino al lote objeto de este contrato, debido a los daños físicos y estéticos que causan. </p>
+
+    <p>-OCTAVA: Por su parte La prominente vendedora, en la condición con que actúa por este acto se obliga a: 1) la electrificación e iluminación del proyecto, exceptuando la instalación y costos del servicio especifico para cada lote y el uso de medidores, los cuales correrán a cargo de El PROMINENTE COMPRADOR (a).-2) la dotación del suministro global del agua potable, exceptuando los costos de instalación y el uso de medidores de agua para cada lote los cuales corren a cargo de El PROMINENTE COMPRADOR (a) cuando sean necesario. </p>
+
+    <p>NOVENA: Queda Prohibido al PROMINENTE COMPRADOR (a) y a sus descendientes: a) Utilizar el inmueble para fines de deposito de materiales inflamables, corrosivas o explosivas o para cantinas, bares o lenocinios o similares en que se expendan bebidas alcohólicas; b) Ceder el presente contrato y los derechos que de el se derivan y fraccionar el lote o los lotes, convertirlo en acceso o calle hacia otras áreas de la urbanización, colonias o predios vecinos, sin la autorización previa y por escrito de la Prominente Vendedora. c) Ocupar, tomar posesión detener áreas de terreno adicionales a las que corresponden al lote o los lotes objeto de este contrato, sean o no adyacentes al mismo, d) Realizar labores hogareñas como lavado de ropa, su secado, disposición de basura y las demás similares en condiciones que causen molestias y riesgos a la salud y a los bienes de los vecinos o que afectan el medio ambiente y la libre circulación peatonal y vehicular en las vías publicas, e) Instalar cualquier tipo de propaganda o cartelones y placas, excepto las comúnmente usadas para identificar al ocupante del inmueble, nomenclatura municipal y las profesionales siempre que se instalen dentro de la propiedad y para el cumplimiento de estas obligaciones, El PROMINENTE COMPRADOR (a) faculta a la Prominente Vendedora, en la condición con que actúa o a quienes este autorice para hacer inspecciones periódicas en el lote. </p>
+
+    <p>DECIMA: El plazo de este contrato es de CIENTO CUARENTA Y CUATRO MESES, contados a partir de la fecha de suscripción, al final del cual deberá verificarse la tradición de dominio en escritura publica de compra venta a favor de El PROMINENTE COMPRADOR (a) y en caso de muertes de este, a favor de la persona o personas que legalmente deban sucederle por vía testamentaria o ab-intestato, previa acreditación de tales derechos con la presentación de la certificación judicial correspondiente debidamente inscrita en el libro de Sentencias del Registro de la propiedad que corresponda. Quedando entendido El PROMINENTE COMPRADOR (a), que en caso de incumplimiento de tres meses consecutivos o alternos en el pago de la mensualidades, este contrato se dará por terminado y todo lo que se haya pagado en concepto de prima o mensualidades, quedaran a favor de la prominente vendedora.- ASI MISMO SE COBRARA UN RECARGO MORATORIO DE DOSCIENTOS CINCUENTA LEMPIRAS (LPS.250.00) SI PAGA DESPUES DEL CINCO DE CADA MES POR CUOTA RETRASADA. </p>
+
+    <p>DECIMO PRIMERA: En caso que El PROMINENTE COMPRADOR (a) o sus herederos incumplieron con las obligaciones a su cargo o incurriesen en cualquiera de las prohibiciones estipuladas en el presente contrato, dará derecho a la Prominente Vendedora, en la condición con que actúa, en cualquiera de estas circunstancias, para dar por terminado de pleno derecho el presente contrato y exigir la inmediata desocupación del inmueble, en cuyo caso los valores pagados por El PROMINENTE COMPRADOR (a) y las mejoras introducidas quedaran a favor de la PROMINENTE VENDEDORA, en la condición con que actúa, en concepto y a cuenta de daños y perjuicios. </p>
+
+    <p>DECIMO SEGUNDA: Queda expresamente convenido y así lo acepta El PROMINENTE COMPRADOR (a). a) Que la conformación o nivelación del lote objeto de este contrato, construcción de muros o cualquiera otra tendencia a prepararlo para la construcción de mejoras, estarán a cargo del PROMINENTE COMPRADOR (a). b) que este contrato tendrá efectos a partir de la fecha de suscripción; independiente de la fecha en que materialmente El PROMINENTE COMPRADOR (a) reciba el lote o los lotes de terreno dado en promesa de venta. c) La construcción de muros perimetrales que privaticen el lote prometidos en venta, será responsabilidad de El PROMINENTE COMPRADOR (a). </p>
+
+    <p>DECIMA TERCERA: El <span id="prominenteComprador"></span> renuncia expresamente al fuero de su domicilio y se somete, en caso de conflicto, al Juzgado de Letras Seccional de La Ceiba, Departamento de Atlántida, recibiendo El PROMINENTE COMPRADOR (a) a su entera satisfacción, el inmueble objeto del presente contrato. </p>
+
+    <p>DECIMO CUARTA: El <span id="datosCompradorFinalContrato"></span>, en la condición con que actúa manifiesta que es cierto todo lo expresado por la señora CARMEN NOHEMI MENCIAS CARIAS, en su condición antes expresada y que por así tenerlo convenido acepta expresamente todo lo estipulado en el presente contrato y se compromete a darle cumplimiento de buena fe, en virtud de lo cual lo suscribimos en original y dos copias de las cuales se entregaran una al prominente comprador y otra a la oficina de catastro municipal de la Ciudad de la Masica para su inscripción. </p>
+
+    <p class="no-indent"><span id="fechaLetras"></span></p>
+    
+    <div class="signature-section">
+        <div class="signature-blocks-container" id="signatureBlocks">
+            <div class="signature-block">
+                <div class="signature-line"></div>
+                <div class="signature-name">CARMEN NOHEMI MENCIAS C.</div>
+                <div class="signature-role">GERENTE I.D.F.</div>
+            </div>
+            </div>
+    </div>
+
+    <footer>
+        <p>Documento generado el <span id="currentDate"></span>.</p>
+        <p>Conforme a las directrices de la Dirección General de Control de Documentos y Archivos de Honduras.</p>
+    </footer>
+  </div>
+
+  <div id="messageDisplay" class="message-display"></div>
+
+  <script>
+    // Elementos del DOM para poblar
+    const datoCompradorContratoEl = document.getElementById('datoCompradorContrato');
+    const datosLotificacionContratoEl = document.getElementById('datosLotificacionContrato');
+    const identificacionLotesVentaContratoEl = document.getElementById('identificacionLotesVentaContrato');
+    const datosLotesVentaContratoEl = document.getElementById('datosLotesVentaContrato');
+    const prominenteCompradorEl = document.getElementById('prominenteComprador');
+    const datosCompradorFinalContratoEl = document.getElementById('datosCompradorFinalContrato');
+    const fechaLetrasEl = document.getElementById('fechaLetras');
+    const signatureBlocksContainer = document.getElementById('signatureBlocks');
+
+    const messageDisplayEl = document.getElementById('messageDisplay');
+    const currentDateEl = document.getElementById('currentDate');
+
+    // Función para limpiar y compactar el texto
+    function cleanContent(text) {
+        if (text === null || text === undefined || text === '') return '';
+        return String(text).trim().replace(/\s+/g, ' ');
+    }
+
+    // Mostrar la fecha y hora actual en el pie de página
+    currentDateEl.textContent = new Date().toLocaleDateString('es-HN', {
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
+
+    // --- Lógica para obtener datos de la URL ---
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Extraer y limpiar los datos de los parámetros de la URL
+    // NOTA: Los nombres de los parámetros deben coincidir EXACTAMENTE con los que envíes desde AppSheet.
+    const datoCompradorContrato = cleanContent(urlParams.get('datoCompradorContrato'));
+    const datosLotificacionContrato = cleanContent(urlParams.get('datosLotificacionContrato'));
+    const identificacionLotesVentaContrato = cleanContent(urlParams.get('identificacionLotesVentaContrato'));
+    const datosLotesVentaContrato = cleanContent(urlParams.get('datosLotesVentaContrato'));
+    const prominenteComprador = cleanContent(urlParams.get('prominenteComprador'));
+    const datosCompradorFinalContrato = cleanContent(urlParams.get('datosCompradorFinalContrato'));
+    const fechaLetras = cleanContent(urlParams.get('fechaLetras'));
+    // Nuevo parámetro para los nombres de los compradores que firmarán (separados por coma)
+    const signatureBuyersString = cleanContent(urlParams.get('signatureBuyers'));
+
+    // --- Poblar los elementos HTML ---
+    try {
+        // Verificar si se recibió al menos un parámetro clave para evitar mostrar un contrato vacío
+        if (!datoCompradorContrato && !datosLotificacionContrato && !fechaLetras && !signatureBuyersString) {
+            throw new Error("No se recibieron datos esenciales para el contrato a través de la URL. Asegúrate de que la acción de AppSheet envía los parámetros correctamente.");
+        }
+
+        datoCompradorContratoEl.textContent = datoCompradorContrato || '[Dato Comprador Principal Faltante]';
+        datosLotificacionContratoEl.textContent = datosLotificacionContrato || '[Datos Lotificación Faltantes]';
+        identificacionLotesVentaContratoEl.textContent = identificacionLotesVentaContrato || '[Identificación Lotes Faltante]';
+        datosLotesVentaContratoEl.textContent = datosLotesVentaContrato || '[Datos Lotes Faltantes]';
+        prominenteCompradorEl.textContent = prominenteComprador || 'PROMINENTE COMPRADOR (a)';
+        datosCompradorFinalContratoEl.textContent = datosCompradorFinalContrato || '[Datos Comprador Final Faltantes]';
+        fechaLetrasEl.textContent = fechaLetras || 'Dado en la ciudad de la Ceiba, Departamento de Atlántida a los [Fecha Faltante]';
+
+        // --- Generar bloques de firma para compradores ---
+        const buyersToSignArray = signatureBuyersString.split(',').map(b => b.trim()).filter(b => b !== '');
+
+        buyersToSignArray.forEach(signerName => {
+            if (signerName) { // Asegurarse de que el nombre no esté vacío
+                const signatureBlock = document.createElement('div');
+                signatureBlock.className = 'signature-block';
+                signatureBlock.innerHTML = `
+                    <div class="signature-line"></div>
+                    <div class="signature-name">${signerName}</div>
+                    <div class="signature-role">PROMINENTE COMPRADOR (A) / O ESTIPULANTE</div>
+                `;
+                signatureBlocksContainer.appendChild(signatureBlock);
+            }
+        });
+
+        // Si no hay compradores para firmar, podrías añadir un mensaje o ajustar el estilo
+        if (buyersToSignArray.length === 0) {
+             // Puedes dejar el vendedor solo o añadir un mensaje. Dejaré solo al vendedor.
+        }
+
+    } catch (error) {
+        console.error('Error al procesar los datos de la URL:', error);
+        document.querySelector('.container').style.display = 'none'; // Ocultar el contenido si hay error
+        messageDisplayEl.textContent = `Error al mostrar el contrato: ${error.message}. Por favor, verifica la acción de AppSheet y los parámetros de la URL.`;
+        messageDisplayEl.classList.add('error');
+        messageDisplayEl.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
