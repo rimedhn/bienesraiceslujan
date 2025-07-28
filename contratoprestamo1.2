@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de Productos para Documentos Legales</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 30px;
+      background-color: #eef4f7; /* Fondo azul-gris claro */
+      color: #333;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #0056b3;
+      margin-bottom: 30px;
+      font-size: 2.2em;
+      border-bottom: 2px solid #0056b3;
+      padding-bottom: 10px;
+    }
+    p {
+        text-align: justify; /* Justificar el texto para apariencia legal */
+        margin-bottom: 20px;
+        line-height: 1.8; /* Aumentar interlineado para legibilidad en texto justificado */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #dcdcdc; /* Borde más claro */
+      text-align: left;
+      vertical-align: top; /* Alinear contenido a la parte superior de la celda */
+      white-space: normal; /* Permitir que el texto se ajuste naturalmente */
+    }
+    th {
+      background-color: #e8f0f8; /* Encabezado azul claro */
+      font-weight: bold;
+      color: #333;
+      position: sticky; /* Encabezados pegajosos para tablas largas */
+      top: 0;
+      z-index: 1;
+    }
+    tr:nth-child(even) {
+      background-color: #f9fcff; /* Azul muy claro para filas pares */
+    }
+    tr:hover {
+      background-color: #e0f2f7; /* Efecto hover */
+    }
+    img {
+      max-width: 80px; /* Imágenes ligeramente más pequeñas para prolijidad */
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      object-fit: contain; /* Asegura que la imagen se ajuste sin recortar */
+    }
+    .error-message {
+      color: #d9534f; /* Rojo para errores */
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.2em;
+      background-color: #f2dede;
+      border: 1px solid #ebccd1;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #dcdcdc;
+        color: #777;
+        font-size: 0.9em;
+    }
+
+    /* Estilos específicos para impresión (no solicitados, pero buena práctica) */
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        font-size: 10pt; /* Fuente más pequeña para impresión */
+      }
+      .container {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 10mm; /* Usar mm para impresión */
+        max-width: none;
+        margin: 0;
+      }
+      th, td {
+        padding: 8px 10px; /* Relleno más pequeño para impresión */
+        border-color: #ccc;
+      }
+      img {
+        max-width: 60px; /* Imágenes más pequeñas para impresión */
+      }
+      footer {
+          display: none; /* Ocultar pie de página en impresión */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Catálogo de Productos para Documentos Legales</h1>
+    <p>El presente documento detalla la lista de productos disponibles en el supermercado, presentando sus características esenciales para fines de registro y verificación legal. Cada elemento ha sido consignado de forma corrida, sin espacios ni interrupciones innecesarias, conforme a la normativa de redacción aplicable en documentos jurídicos y comerciales en la República de Honduras. Los datos contenidos en las columnas reflejan la información actual del inventario, y cualquier discrepancia será debidamente notificada y rectificada. Se insta a los interesados a revisar minuciosamente la presente relación de productos, la cual constituye un anexo indispensable para los procesos administrativos y transaccionales correspondientes. </p>
+    <table id="catalogo"></table>
+    <div id="loading-message" class="error-message">Cargando catálogo... Por favor, asegúrese de que la URL del Google Sheet es correcta y está publicada en formato CSV.</div>
+    <footer>
+        <p>Documento generado el <span id="currentDate"></span>.</p>
+        <p>Conforme a las directrices de la Dirección General de Control de Documentos y Archivos de Honduras.</p>
+    </footer>
+  </div>
+
+  <script>
+    const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vEjemploID/pub?output=csv'; // <-- ¡IMPORTANTE! Reemplaza este enlace con tu URL real publicada de Google Sheet
+
+    const catalogoTable = document.getElementById('catalogo');
+    const loadingMessage = document.getElementById('loading-message');
+    const currentDateElement = document.getElementById('currentDate');
+
+    // Muestra la fecha actual en el pie de página
+    currentDateElement.textContent = new Date().toLocaleDateString('es-HN', {
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
+
+    fetch(URL)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Error de red: ${res.status} ${res.statusText}.`);
+        }
+        return res.text();
+      })
+      .then(data => {
+        loadingMessage.style.display = 'none'; // Ocultar mensaje de carga
+
+        // Limpiar datos antes de dividir: eliminar BOM si está presente, recortar espacios en blanco generales
+        const cleanData = data.trim().replace(/^\uFEFF/, ''); // Eliminar BOM (Byte Order Mark) si está presente
+
+        const rows = cleanData.split('\n');
+
+        if (rows.length === 0 || (rows.length === 1 && rows[0].trim() === '')) {
+            // Se asume que la tabla tendrá 4 columnas para que el mensaje se centre bien
+            catalogoTable.innerHTML = '<tr><td colspan="4">No se encontraron productos o la hoja está vacía.</td></tr>';
+            return;
+        }
+
+        // Procesar fila de encabezado
+        const headerCols = rows[0].split(',');
+        const headerRow = document.createElement('tr');
+        headerCols.forEach(headerCol => {
+            const th = document.createElement('th');
+            // Limpiar texto del encabezado: reemplazar múltiples espacios/saltos de línea con un solo espacio, recortar
+            th.textContent = headerCol.trim().replace(/\s+/g, ' ');
+            headerRow.appendChild(th);
+        });
+        catalogoTable.appendChild(headerRow);
+
+        // Procesar filas de datos
+        rows.slice(1).forEach(row => { // Saltar fila de encabezado
+          const cols = row.split(',');
+          const tr = document.createElement('tr');
+
+          cols.forEach((col, i) => {
+            const cell = document.createElement('td');
+            // Limpiar contenido de la celda: reemplazar múltiples espacios/saltos de línea con un solo espacio, recortar
+            const cellContent = col.trim().replace(/\s+/g, ' ');
+
+            // Asume que la imagen está en la 3ra columna (índice 2). Ajusta 'i === 2' si es diferente.
+            if (i === 2) { // Condición para la columna de imagen
+              const img = document.createElement('img');
+              img.src = cellContent;
+              img.alt = `Imagen del producto`; // Texto alternativo genérico
+              img.onerror = () => { // Manejar errores de carga de imagen
+                  img.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjY2NjIj48cGF0aCBkPSJNMjEgNlY1YTEgMSAwIDAgMC0xLTFINGExIDEgMCAwIDAtMSAxVjE3YTEgMSAwIDAgMCAxIDFIMTdhMSAxIDAgMCAwIDEtMVY4LjQ4OWwxLjY1IDEuNjVBMSAxIDAgMCAwIDIxIDEwbDBWN3pNNyAxNGE0IDQgMCAxIDAgMCA4IDQgNCAwIDAgMCAwLTh6bTggMi41TDE0LjA2MSAxN0wxMiA5LjI2OGwtNC4wNjEgNy40MDJMMyA4aDE4bC01Ljl2Ni44NzJ6bS0zLjQ4Ni0zLjQ4NmExLjUgMS41IDAgMSAxIDAgM0g4di0zLjAwNHoiLz48L3N2Zz4='; // SVG genérico de imagen rota
+                  img.style.maxWidth = '50px';
+                  img.alt = 'Imagen no disponible';
+              };
+              cell.appendChild(img);
+            } else {
+              cell.textContent = cellContent;
+            }
+            tr.appendChild(cell);
+          });
+          catalogoTable.appendChild(tr);
+        });
+      })
+      .catch(error => {
+        console.error('Error al cargar el catálogo:', error);
+        loadingMessage.textContent = `Error al cargar el catálogo: ${error.message}. Por favor, verifica la URL del Google Sheet y su configuración de publicación (debe ser público en formato CSV).`;
+        loadingMessage.style.display = 'block'; // Asegurarse de que el mensaje de error sea visible
+      });
+  </script>
+</body>
+</html>
