@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESTADO DE CUENTA - CLIENTE</title>
+  <link rel="icon" href="https://github.com/rimedhn/inversionesrdb/blob/main/LOGO%20NEGRO%20REDONDO%20RDB.png?raw=true" type="image/x-icon">
+  <style>
+    body { font-family: Arial, sans-serif; background: #fff; padding: 0; margin: 0; }
+    .estado-cuenta-container { width: 8in; margin: auto; background: #fff; min-height: 10in; padding: 0.6in 0.5in; position: relative; }
+    .header-logo-table { width: 100%; border: none; }
+    .logo-img { width: 72px; height: 72px; object-fit: contain; }
+    .empresa { font-size: 23px; font-weight: bold; letter-spacing: 1px; }
+    .empresa-info { font-size: 13px; color: #333; }
+    h2, .seccion-titulo { font-size: 18px; font-weight: bold; margin:15px 0 6px 0; text-align: left; }
+    .datos-basicos { margin:10px 0 8px 0; font-size: 16px; }
+    .desc-lote-table { width: 100%; font-size: 15px; margin-top: 6px; border:none; }
+    .desc-lote-table td { border: none; background: #fff; padding:2px 4px;}
+    .cuota-nivelada-collapse { background: #ffe385; font-weight: bold; font-size: 17px; text-align: right; padding: 0px 7px; border-radius:5px; letter-spacing:0.5px; }
+    .fecha-contrato { color: #e01313; font-weight:bold;}
+    .pagos-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
+    .pagos-table th, .pagos-table td { padding: 3px 6px; border: 1px solid #222; text-align: right;}
+    .pagos-table th { background: #f4f4f4; }
+    .pagos-table tbody tr:nth-child(even) { background: #fafafa; }
+    .pagos-table td.izq, .pagos-table th.izq { text-align: left; }
+    .pagos-table td.cuota-nivelada, .pagos-table th.cuota-nivelada { background: #ffe385; font-weight: bold; }
+    .pagos-table td.saldo-actual { font-weight: bold; color: #e01313; background: #ffe385; }
+    .monto-letras { text-align: left; font-weight: bold; font-size: 15px; margin: 3px 0 5px 0; }
+    @media print {
+      body, .estado-cuenta-container { background: #fff !important; }
+      .estado-cuenta-container { page-break-after: always; }
+      .fecha-contrato { color: #e01313 !important;}
+    }
+  </style>
+</head>
+<body>
+  <div class="estado-cuenta-container">
+    <table class="header-logo-table">
+      <tr>
+        <td style="width:90px;"><img class="logo-img" src="https://github.com/rimedhn/inversionesrdb/blob/main/LOGO%20NEGRO%20CUADRADO%20RDB.png?raw=true" alt="Logo" /></td>
+        <td>
+          <div class="empresa">INVERSIONES RDB S. DE R. L</div>
+          <div class="empresa-info">RTN: 05019023506377</div>
+          <div class="empresa-info">El Progreso Yoro, Barrio El Buenos Aires 17 calle 2-3 ave</div>
+          <div class="empresa-info">Teléfono: +504-8833-2060 | Email: inversionesrdb2023@gmail.com</div>
+        </td>
+      </tr>
+    </table>
+    <hr>
+    <h2>ESTADO DE CUENTA</h2>
+    <div class="datos-basicos">
+      <span><b>Cliente/Estipulante:</b> <span id="NombreCliente"></span></span><br>
+      <span><b>Comprador(es):</b> <span id="NombreCompradores"></span></span>
+    </div>
+    <div class="seccion-titulo">DESCRIPCIÓN DEL LOTE / PRÉSTAMO</div>
+    <table class="desc-lote-table">
+      <tr>
+        <td><b>Lotificación:</b> <span id="NombreLotificacion"></span></td>
+        <td><b>Número de lote:</b> <span id="NoLoteybloque"></span></td>
+      </tr>
+      <tr>
+        <td><b>Valor del terreno:</b> L<span id="Monto"></span></td>
+        <td><b>Valor de la Prima:</b> L<span id="Prima"></span></td>
+      </tr>
+      <tr>
+        <td><b>Valor Financiado:</b> L<span id="Financiado"></span></td>
+        <td><b>Plazo de financiamiento:</b> <span id="PlazoLetras"></span></td>
+      </tr>
+      <tr>
+        <td><b>Cuota Nivelada Mensual:</b> <span class="cuota-nivelada-collapse" id="CuotaLetras"></span></td>
+        <td><b>Fecha del contrato:</b> <span class="fecha-contrato" id="FechaAprobado"></span></td>
+      </tr>
+    </table>
+    <div class="seccion-titulo" style="margin-top:13px;">Detalle de los pagos</div>
+    <table class="pagos-table" id="pagosTable">
+      <thead>
+        <tr>
+          <th class="izq">Fecha</th>
+          <th class="izq">Mes</th>
+          <th>Pago</th>
+          <th>No.</th>
+          <th>Capital</th>
+          <th>Interés</th>
+          <th>Cuota</th>
+          <th>Mora 3%</th>
+          <th>Abono Capital</th>
+          <th class="saldo-actual">Saldo Actual</th>
+        </tr>
+      </thead>
+      <tbody id="detallePagosBody"></tbody>
+    </table>
+  </div>
+  <script>
+    // URLs de datos y parámetros
+    const openSheetPrestamo = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Prestamo";
+    const openSheetAbono = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Abono prestamo";
+
+    // Lee el parámetro nprestamo de la URL
+    function getQueryParam(param) {
+      var urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+    function fetchJSON(url){ return fetch(url).then(r=>r.json()); }
+    function formatCurrency(num){ if(isNaN(num))return "L 0.00"; return "L "+parseFloat(num).toLocaleString('es-HN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+    function parseNumber(val){ val=(""+val).replace("L","").replace("$","").replace(",","").trim(); return parseFloat(val)||0; }
+    function formatMonthYear(fechaStr){
+      // espera yyyy-mm-dd, retorna mes/año
+      let d=new Date(fechaStr);
+      if(isNaN(d.getTime())) return "";
+      return (d.getMonth()+1)+"/"+d.getFullYear();
+    }
+    function formatFecha(fechaStr){
+      if(!fechaStr)return "";
+      let d=new Date(fechaStr);
+      if (isNaN(d.getTime())) return fechaStr;
+      let dd = d.getDate()>9?d.getDate():"0"+d.getDate();
+      let mm = (d.getMonth()+1)>9?(d.getMonth()+1):"0"+(d.getMonth()+1);
+      let yyyy=d.getFullYear();
+      return dd+"/"+mm+"/"+yyyy;
+    }
+    // Calcula estado de cuenta
+    async function loadEstadoCuenta() {
+      let nprestamo = getQueryParam('nprestamo');
+      if (!nprestamo) { alert("Falta el parámetro nprestamo."); return; }
+      let [prestamos, abonos] = await Promise.all([
+        fetchJSON(openSheetPrestamo),
+        fetchJSON(openSheetAbono)
+      ]);
+      let prestamo = prestamos.find(p => p.NoPrestamo == nprestamo);
+      if (!prestamo) { alert("Préstamo no encontrado."); return; }
+
+      document.getElementById("NombreCliente").textContent = prestamo.NombreCliente || "";
+      document.getElementById("NombreCompradores").textContent = prestamo.NombreCompradores || "";
+      document.getElementById("NombreLotificacion").textContent = prestamo.NombreLotificacion || "";
+      document.getElementById("NoLoteybloque").textContent = prestamo.NoLoteybloque || "";
+      document.getElementById("Monto").textContent = parseNumber(prestamo.Monto).toFixed(2);
+      document.getElementById("Prima").textContent = parseNumber(prestamo.Prima).toFixed(2);
+      document.getElementById("Financiado").textContent = parseNumber(prestamo.FinanciadoLetras).toFixed(2);
+      document.getElementById("PlazoLetras").textContent = prestamo.PlazoLetras || prestamo.Plazo || "";
+      document.getElementById("CuotaLetras").textContent = formatCurrency(parseNumber(prestamo.CuotaLetras));
+      document.getElementById("FechaAprobado").textContent = formatFecha(prestamo.FechaAprobado);
+
+      let abonosPrestamo = abonos.filter(a => a.Prestamo == nprestamo || a.NoPrestamo == nprestamo).sort((a,b) => new Date(a.Fecha)-new Date(b.Fecha));
+      let saldoActual = parseNumber(prestamo.FinanciadoLetras);
+      let tbody = document.getElementById("detallePagosBody");
+      tbody.innerHTML = "";
+
+      // Calcula pagos (pagos puede tener abonos, moras, complemento)
+      for (let idx=0; idx<abonosPrestamo.length; ++idx) {
+        let ab = abonosPrestamo[idx];
+        let pago = parseNumber(ab.Monto);
+        let capital = parseNumber(ab.Capital);
+        let interes = parseNumber(ab.Interes);
+        let cuota = parseNumber(ab.Cuota);
+        let mora = parseNumber(ab.Recargo);
+        let abonoCapital = parseNumber(ab["Abono capital"]) || 0;
+        let fecha = formatFecha(ab.Fecha);
+        let mes = formatMonthYear(ab.Fecha);
+        let noCuota = ab["No cuota"] || (idx+1);
+
+        saldoActual -= capital + abonoCapital;
+
+        let fila = tbody.insertRow(-1);
+        fila.insertCell().className = "izq";
+        fila.cells[0].textContent = fecha;
+        fila.insertCell().className = "izq";
+        fila.cells[1].textContent = mes;
+        fila.insertCell().textContent = formatCurrency(pago);
+        fila.insertCell().textContent = noCuota;
+        fila.insertCell().textContent = formatCurrency(capital);
+        fila.insertCell().textContent = formatCurrency(interes);
+        fila.insertCell().textContent = formatCurrency(cuota);
+        fila.insertCell().textContent = formatCurrency(mora);
+        fila.insertCell().textContent = formatCurrency(abonoCapital);
+        fila.insertCell().className = "saldo-actual";
+        fila.cells[9].textContent = formatCurrency(saldoActual);
+      }
+      // Primera fila saldo inicial
+      if(abonosPrestamo.length===0){
+        let fila = tbody.insertRow(0);
+        fila.insertCell().textContent = '';
+        fila.insertCell().textContent = '';
+        fila.insertCell().textContent = '';
+        fila.insertCell().textContent = '';
+        fila.insertCell().textContent = '';
+        fila.insertCell().textContent = '';
+        fila.insertCell().textContent = '';
+        fila.insertCell().textContent = '';
+        fila.insertCell().textContent = '';
+        fila.insertCell().className = "saldo-actual";
+        fila.cells[9].textContent = formatCurrency(saldoActual);
+      }
+    }
+    window.onload = loadEstadoCuenta;
+  </script>
+</body>
+</html>
