@@ -18,6 +18,7 @@
     .desc-lote-table td { border: none; background: #fff; padding:2px 4px;}
     .cuota-nivelada-collapse { background: #ffe385; font-weight: bold; font-size: 17px; text-align: right; padding: 0px 7px; border-radius:5px; letter-spacing:0.5px; }
     .fecha-contrato { color: #e01313; font-weight:bold;}
+    .saldo-inicial { text-align: right; font-weight: bold; color: #d77f00; font-size: 17px; margin: 13px 0 5px 0;}
     .pagos-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; }
     .pagos-table th, .pagos-table td { padding: 3px 6px; border: 1px solid #222; text-align: right;}
     .pagos-table th { background: #f4f4f4; }
@@ -65,14 +66,17 @@
         <td><b>Valor de la Prima:</b> L<span id="Prima"></span></td>
       </tr>
       <tr>
-        <td><b>Valor Financiado:</b> L<span id="Financiado"></span></td>
-        <td><b>Plazo de financiamiento:</b> <span id="PlazoLetras"></span></td>
+        <td colspan="2"><b>Valor Financiado:</b> L<span id="Financiado"></span></td>
       </tr>
       <tr>
+        <td><b>Plazo de financiamiento:</b> <span id="PlazoLetras"></span></td>
         <td><b>Cuota Nivelada Mensual:</b> <span class="cuota-nivelada-collapse" id="CuotaLetras"></span></td>
-        <td><b>Fecha del contrato:</b> <span class="fecha-contrato" id="FechaAprobado"></span></td>
+      </tr>
+      <tr>
+        <td colspan="2"><b>Fecha del contrato:</b> <span class="fecha-contrato" id="FechaAprobado"></span></td>
       </tr>
     </table>
+    <div class="saldo-inicial" id="SaldoInicialHolder"></div>
     <div class="seccion-titulo" style="margin-top:13px;">Detalle de los pagos</div>
     <table class="pagos-table" id="pagosTable">
       <thead>
@@ -97,7 +101,6 @@
     const openSheetPrestamo = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Prestamo";
     const openSheetAbono = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Abono prestamo";
 
-    // Lee el parámetro idprestamo de la URL
     function getQueryParam(param) {
       var urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
@@ -120,7 +123,6 @@
       let yyyy=d.getFullYear();
       return dd+"/"+mm+"/"+yyyy;
     }
-    // Calcula estado de cuenta
     async function loadEstadoCuenta() {
       let idprestamo = getQueryParam('idprestamo');
       if (!idprestamo) { alert("Falta el parámetro idprestamo."); return; }
@@ -131,31 +133,39 @@
       let prestamo = prestamos.find(p => p.idprestamo == idprestamo);
       if (!prestamo) { alert("Préstamo no encontrado."); return; }
 
+      // Extracción y cálculo de valores
+      let monto = parseNumber(prestamo.Monto);
+      let prima = parseNumber(prestamo.Prima);
+      let valorFinanciado = monto - prima;
+
       document.getElementById("NombreCliente").textContent = prestamo.NombreCliente || "";
       document.getElementById("NombreCompradores").textContent = prestamo.NombreCompradores || "";
       document.getElementById("NombreLotificacion").textContent = prestamo.NombreLotificacion || "";
       document.getElementById("NoLoteybloque").textContent = prestamo.NoLoteybloque || "";
-      document.getElementById("Monto").textContent = parseNumber(prestamo.Monto).toFixed(2);
-      document.getElementById("Prima").textContent = parseNumber(prestamo.Prima).toFixed(2);
-      document.getElementById("Financiado").textContent = parseNumber(prestamo.FinanciadoLetras).toFixed(2);
+      document.getElementById("Monto").textContent = monto.toFixed(2);
+      document.getElementById("Prima").textContent = prima.toFixed(2);
+      document.getElementById("Financiado").textContent = valorFinanciado.toFixed(2);
       document.getElementById("PlazoLetras").textContent = prestamo.PlazoLetras || prestamo.Plazo || "";
       document.getElementById("CuotaLetras").textContent = formatCurrency(parseNumber(prestamo.CuotaLetras));
       document.getElementById("FechaAprobado").textContent = formatFecha(prestamo.FechaAprobado);
 
+      document.getElementById("SaldoInicialHolder").textContent = "SALDO INICIAL: " + formatCurrency(valorFinanciado);
+
       let abonosPrestamo = abonos.filter(a => a.Prestamo == idprestamo).sort((a,b) => new Date(a.Fecha)-new Date(b.Fecha));
-      let saldoActual = parseNumber(prestamo.FinanciadoLetras);
+      let saldoActual = valorFinanciado;
       let tbody = document.getElementById("detallePagosBody");
       tbody.innerHTML = "";
 
-      // Calcula pagos (pagos puede tener abonos, moras, complemento)
+      // Si el préstamo es sin intereses, igual se muestran pagos
       for (let idx=0; idx<abonosPrestamo.length; ++idx) {
         let ab = abonosPrestamo[idx];
+        // Si no hay interés, poner 0 (nunca omitir la fila)
         let pago = parseNumber(ab.Monto);
         let capital = parseNumber(ab.Capital);
-        let interes = parseNumber(ab.Interes);
-        let cuota = parseNumber(ab.Cuota);
-        let mora = parseNumber(ab.Recargo);
-        let abonoCapital = parseNumber(ab["Abono capital"]) || 0;
+        let interes = ab.Interes ? parseNumber(ab.Interes) : 0;
+        let cuota = ab.Cuota ? parseNumber(ab.Cuota) : 0;
+        let mora = ab.Recargo ? parseNumber(ab.Recargo) : 0;
+        let abonoCapital = ab["Abono capital"] ? parseNumber(ab["Abono capital"]) : 0;
         let fecha = formatFecha(ab.Fecha);
         let mes = formatMonthYear(ab.Fecha);
         let noCuota = ab["No cuota"] || (idx+1);
@@ -163,10 +173,8 @@
         saldoActual -= capital + abonoCapital;
 
         let fila = tbody.insertRow(-1);
-        fila.insertCell().className = "izq";
-        fila.cells[0].textContent = fecha;
-        fila.insertCell().className = "izq";
-        fila.cells[1].textContent = mes;
+        fila.insertCell().className = "izq"; fila.cells[0].textContent = fecha;
+        fila.insertCell().className = "izq"; fila.cells[1].textContent = mes;
         fila.insertCell().textContent = formatCurrency(pago);
         fila.insertCell().textContent = noCuota;
         fila.insertCell().textContent = formatCurrency(capital);
@@ -174,23 +182,13 @@
         fila.insertCell().textContent = formatCurrency(cuota);
         fila.insertCell().textContent = formatCurrency(mora);
         fila.insertCell().textContent = formatCurrency(abonoCapital);
-        fila.insertCell().className = "saldo-actual";
-        fila.cells[9].textContent = formatCurrency(saldoActual);
+        fila.insertCell().className = "saldo-actual"; fila.cells[9].textContent = formatCurrency(saldoActual);
       }
-      // Primera fila saldo inicial
+      // Si no hay pagos, mostrar saldo inicial
       if(abonosPrestamo.length===0){
         let fila = tbody.insertRow(0);
-        fila.insertCell().textContent = '';
-        fila.insertCell().textContent = '';
-        fila.insertCell().textContent = '';
-        fila.insertCell().textContent = '';
-        fila.insertCell().textContent = '';
-        fila.insertCell().textContent = '';
-        fila.insertCell().textContent = '';
-        fila.insertCell().textContent = '';
-        fila.insertCell().textContent = '';
-        fila.insertCell().className = "saldo-actual";
-        fila.cells[9].textContent = formatCurrency(saldoActual);
+        for(let c=0;c<9;c++) fila.insertCell().textContent = '';
+        fila.insertCell().className = "saldo-actual"; fila.cells[9].textContent = formatCurrency(saldoActual);
       }
     }
     window.onload = loadEstadoCuenta;
