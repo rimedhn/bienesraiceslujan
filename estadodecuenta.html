@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ESTADO DE CUENTA - CLIENTE</title>
-  <link rel="icon" href="https://github.com/rimedhn/inversionesrdb/blob/main/LOGO%20NEGRO%20REDONDO%20RDB.png?raw=true" type="image/x-icon">
+  <link rel="icon" href="https://github.com/rimedhn/bienesraiceslujan/blob/main/Logo%20Bienes%20Raices%20Lujan.png?raw=true" type="image/x-icon">
   <style>
     body { font-family: Arial, sans-serif; background: #fff; padding: 0; margin: 0; }
     .estado-cuenta-container { width: 8in; margin: auto; background: #fff; min-height: 10in; padding: 0.6in 0.5in; position: relative; }
     .header-logo-table { width: 100%; border: none; }
-    .logo-img { width: 72px; height: 72px; object-fit: contain; }
+    .logo-img { width: 82px; height: 82px; object-fit: contain; }
     .empresa { font-size: 23px; font-weight: bold; letter-spacing: 1px; }
     .empresa-info { font-size: 13px; color: #333; }
     h2, .seccion-titulo { font-size: 18px; font-weight: bold; margin:15px 0 6px 0; text-align: left; }
@@ -37,12 +37,14 @@
   <div class="estado-cuenta-container">
     <table class="header-logo-table">
       <tr>
-        <td style="width:90px;"><img class="logo-img" src="https://github.com/rimedhn/inversionesrdb/blob/main/LOGO%20NEGRO%20CUADRADO%20RDB.png?raw=true" alt="Logo" /></td>
+        <td style="width:100px;vertical-align:top;">
+          <img class="logo-img" src="https://github.com/rimedhn/bienesraiceslujan/blob/main/Logo%20Corto%20Bienes%20Raices%20Lujan.jpeg?raw=true" alt="Logo" />
+        </td>
         <td>
-          <div class="empresa">INVERSIONES RDB S. DE R. L</div>
-          <div class="empresa-info">RTN: 05019023506377</div>
-          <div class="empresa-info">El Progreso Yoro, Barrio El Buenos Aires 17 calle 2-3 ave</div>
-          <div class="empresa-info">Teléfono: +504-8833-2060 | Email: inversionesrdb2023@gmail.com</div>
+          <div class="empresa">BIENES RAICES LUJÁN</div>
+          <div class="empresa-info">RTN. 01011981030771</div>
+          <div class="empresa-info">Barrio Nuevo, Calle principal, Plaza Roland.</div>
+          <div class="empresa-info">bienesraiceslujan@live.com Teléfonos: +504 9739-5260</div>
         </td>
       </tr>
     </table>
@@ -95,7 +97,7 @@
     const openSheetPrestamo = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Prestamo";
     const openSheetAbono = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Abono prestamo";
 
-    // Lee el parámetro nprestamo de la URL
+    // Lee el parámetro idprestamo de la URL
     function getQueryParam(param) {
       var urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
@@ -120,13 +122,13 @@
     }
     // Calcula estado de cuenta
     async function loadEstadoCuenta() {
-      let nprestamo = getQueryParam('nprestamo');
-      if (!nprestamo) { alert("Falta el parámetro nprestamo."); return; }
+      let idprestamo = getQueryParam('idprestamo');
+      if (!idprestamo) { alert("Falta el parámetro idprestamo."); return; }
       let [prestamos, abonos] = await Promise.all([
         fetchJSON(openSheetPrestamo),
         fetchJSON(openSheetAbono)
       ]);
-      let prestamo = prestamos.find(p => p.NoPrestamo == nprestamo);
+      let prestamo = prestamos.find(p => p.idprestamo == idprestamo);
       if (!prestamo) { alert("Préstamo no encontrado."); return; }
 
       document.getElementById("NombreCliente").textContent = prestamo.NombreCliente || "";
@@ -140,7 +142,7 @@
       document.getElementById("CuotaLetras").textContent = formatCurrency(parseNumber(prestamo.CuotaLetras));
       document.getElementById("FechaAprobado").textContent = formatFecha(prestamo.FechaAprobado);
 
-      let abonosPrestamo = abonos.filter(a => a.Prestamo == nprestamo || a.NoPrestamo == nprestamo).sort((a,b) => new Date(a.Fecha)-new Date(b.Fecha));
+      let abonosPrestamo = abonos.filter(a => a.Prestamo == idprestamo).sort((a,b) => new Date(a.Fecha)-new Date(b.Fecha));
       let saldoActual = parseNumber(prestamo.FinanciadoLetras);
       let tbody = document.getElementById("detallePagosBody");
       tbody.innerHTML = "";
