@@ -92,7 +92,7 @@
           <th>Capital</th>
           <th>Interés</th>
           <th>Cuota</th>
-          <th>Mora 3%</th>
+          <th>Mora</th>
           <th>Abono Capital</th>
           <th class="saldo-actual">Saldo Actual</th>
         </tr>
@@ -101,7 +101,6 @@
     </table>
   </div>
   <script>
-    // URLs de datos y parámetros
     const openSheetPrestamo = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Prestamo";
     const openSheetAbono = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Abono prestamo";
     function getQueryParam(param) {
@@ -111,10 +110,23 @@
     function fetchJSON(url){ return fetch(url).then(r=>r.json()); }
     function formatCurrency(num){ if(isNaN(num))return "L 0.00"; return "L "+parseFloat(num).toLocaleString('es-HN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
     function parseNumber(val){ val=(""+val).replace("L","").replace("$","").replace(",","").trim(); return parseFloat(val)||0; }
-    function formatFecha(fechaStr){
-      if(!fechaStr)return "";
-      let d=new Date(fechaStr);
-      if (isNaN(d.getTime())) return fechaStr;
+    // Parse dd/mm/yyyy
+    function parseDateDMY(s) {
+      if (!s) return null;
+      let parts = s.split("/");
+      if (parts.length === 3) {
+        let dd = parseInt(parts[0],10);
+        let mm = parseInt(parts[1],10);
+        let yyyy = parseInt(parts[2],10);
+        if (!isNaN(dd) && !isNaN(mm) && !isNaN(yyyy)) {
+          return new Date(yyyy,mm-1,dd);
+        }
+      }
+      return null;
+    }
+    function formatFechaDMY(fechaStr){
+      let d = parseDateDMY(fechaStr);
+      if (!d) return fechaStr;
       let dd = d.getDate()>9?d.getDate():"0"+d.getDate();
       let mm = (d.getMonth()+1)>9?(d.getMonth()+1):"0"+(d.getMonth()+1);
       let yyyy=d.getFullYear();
@@ -125,19 +137,17 @@
       if(principal <= 0 || plazo <= 0) return 0;
       let tasaDecimal = parseFloat(tasa)/100;
       if(isNaN(tasaDecimal) || tasaDecimal==0) return principal/plazo;
-      // cuota = P * (r(1+r)^n) / ((1+r)^n - 1)
       let r = tasaDecimal;
       let n = plazo;
       let cuota = principal * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n)-1);
       return cuota;
     }
-    // Cálculo de número de mes desde la fecha inicial, retorna formato n/aaaa
-    function calcularMesSecuencial(fechaInicial, fechaPago) {
-      let fi = new Date(fechaInicial);
-      let fp = new Date(fechaPago);
-      if (isNaN(fi.getTime()) || isNaN(fp.getTime())) return "";
+    // Calcula el número de mes consecutivo desde la fecha inicial
+    function calcularMesSecuencialDMY(fechaInicialDMY, fechaPagoDMY) {
+      let fi = parseDateDMY(fechaInicialDMY), fp = parseDateDMY(fechaPagoDMY);
+      if (!fi || !fp) return "";
       let diffMonths = (fp.getFullYear() - fi.getFullYear()) * 12 + (fp.getMonth() - fi.getMonth());
-      let mesSecuencia = diffMonths + 1; // mes 1 corresponde a la fecha inicial
+      let mesSecuencia = diffMonths + 1;
       return mesSecuencia + "/" + fp.getFullYear();
     }
     async function loadEstadoCuenta() {
@@ -149,8 +159,6 @@
       ]);
       let prestamo = prestamos.find(p => p.idprestamo == idprestamo);
       if (!prestamo) { alert("Préstamo no encontrado."); return; }
-
-      // Extracción y cálculo de valores
       let monto = parseNumber(prestamo.Monto);
       let prima = parseNumber(prestamo.Prima);
       let valorFinanciado = monto - prima;
@@ -166,19 +174,17 @@
       document.getElementById("Prima").textContent = prima.toFixed(2);
       document.getElementById("Financiado").textContent = valorFinanciado.toFixed(2);
       document.getElementById("PlazoLetras").textContent = (prestamo.Plazo ? prestamo.Plazo + " Meses" : "");
-      document.getElementById("FechaAprobado").textContent = formatFecha(prestamo.FechaAprobado);
+      document.getElementById("FechaAprobado").textContent = formatFechaDMY(prestamo.FechaAprobado);
 
-      // Mostrar cuota y saldo inicial juntos arriba de tabla de pagos
       document.getElementById("CuotaNiveladaCalculo").textContent = formatCurrency(cuotaNivelada);
       document.getElementById("SaldoInicial").textContent = formatCurrency(valorFinanciado);
 
       let abonosPrestamo = abonos
         .filter(a => a.Prestamo == idprestamo)
         .sort((a, b) => {
-          // Ordenar por Fecha de pago si existe, sino por Fecha
-          let fa = new Date(a["Fecha de pago"] || a.Fecha || 0);
-          let fb = new Date(b["Fecha de pago"] || b.Fecha || 0);
-          return fa - fb;
+          let fa = parseDateDMY(a["Fecha de pago"] || a.Fecha || "");
+          let fb = parseDateDMY(b["Fecha de pago"] || b.Fecha || "");
+          return (fa?fa.getTime():0)-(fb?fb.getTime():0);
         });
 
       let saldoActual = valorFinanciado;
@@ -189,8 +195,8 @@
       for (let idx = 0; idx < abonosPrestamo.length; ++idx) {
         let ab = abonosPrestamo[idx];
         let fechaPago = ab["Fecha de pago"] || ab.Fecha;
-        let mesSecuencia = calcularMesSecuencial(fechaAprobado, fechaPago);
-        let fecha = formatFecha(fechaPago);
+        let mesSecuencia = calcularMesSecuencialDMY(fechaAprobado, fechaPago);
+        let fecha = formatFechaDMY(fechaPago);
         let pago = parseNumber(ab.Monto);
         let capital = parseNumber(ab.Capital);
         let interes = ab.Interes ? parseNumber(ab.Interes) : 0;
@@ -203,7 +209,7 @@
 
         let fila = tbody.insertRow(-1);
         fila.insertCell().className = "izq"; fila.cells[0].textContent = fecha;
-        fila.insertCell().textContent = mesSecuencia; // Mes calculado desde fecha inicial
+        fila.insertCell().textContent = mesSecuencia;
         fila.insertCell().textContent = formatCurrency(pago);
         fila.insertCell().textContent = noCuota;
         fila.insertCell().textContent = formatCurrency(capital);
