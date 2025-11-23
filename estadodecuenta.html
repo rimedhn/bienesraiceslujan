@@ -14,8 +14,10 @@
     .empresa-info { font-size: 13px; color: #333; }
     h2, .seccion-titulo { font-size: 18px; font-weight: bold; margin:15px 0 6px 0; text-align: left; }
     .datos-basicos { margin:10px 0 8px 0; font-size: 16px; }
-    .desc-lote-table { width: 100%; font-size: 15px; margin-top: 6px; border:none; }
-    .desc-lote-table td { border: none; background: #fff; padding:2px 4px;}
+    .desc-lote-table-custom { width: 100%; table-layout: fixed; border:none; font-size: 15px; margin-top:8px; }
+    .desc-lote-table-custom td { border: none; background: #fff; padding:4px 6px; vertical-align:top; }
+    .desc-lote-left { width:55%; }
+    .desc-lote-right { width:45%; text-align: right; }
     .cuota-saldo-area { width:100%; display:flex; flex-direction: column; align-items: flex-end; margin-bottom:5px; margin-top:6px;}
     .cuota-line { font-size: 16px; font-weight: bold; color: #1D70B7; padding-bottom:2px;}
     .saldo-inicial {font-size:16px; font-weight:bold; color:#d77f00;}
@@ -56,25 +58,24 @@
       <span><b>Comprador(es):</b> <span id="NombreComprador"></span></span>
     </div>
     <div class="seccion-titulo">DESCRIPCIÓN DEL LOTE / PRÉSTAMO</div>
-    <table class="desc-lote-table">
+    <!-- Ajustado distribución de campos -->
+    <table class="desc-lote-table-custom">
       <tr>
-        <td><b>Lotificación:</b> <span id="NombreLotificacion"></span></td>
-        <td><b>Número de lote:</b> <span id="NoLoteybloque"></span></td>
-      </tr>
-      <tr>
-        <td><b>Valor del terreno:</b> L<span id="Monto"></span></td>
-        <td><b>Valor de la Prima:</b> L<span id="Prima"></span></td>
-      </tr>
-      <tr>
-        <td colspan="2"><b>Valor Financiado:</b> L<span id="Financiado"></span></td>
+        <td class="desc-lote-left">
+          <b>Valor del terreno:</b> L<span id="Monto"></span><br>
+          <b>Valor de la Prima:</b> L<span id="Prima"></span><br>
+          <b>Valor Financiado:</b> L<span id="Financiado"></span>
+        </td>
+        <td class="desc-lote-right">
+          <b>Lotificación:</b> <span id="NombreLotificacion"></span><br>
+          <b>Número de lote:</b> <span id="NoLoteybloque"></span><br>
+          <b>Fecha del contrato:</b> <span class="fecha-contrato" id="FechaAprobado"></span>
+        </td>
       </tr>
       <tr>
         <td colspan="2">
           <b>Plazo de financiamiento:</b> <span id="PlazoLetras"></span>
         </td>
-      </tr>
-      <tr>
-        <td colspan="2"><b>Fecha del contrato:</b> <span class="fecha-contrato" id="FechaAprobado"></span></td>
       </tr>
     </table>
     <div class="seccion-titulo" style="margin-top:20px;">Detalle de pagos</div>
@@ -132,18 +133,15 @@
       }
       return null;
     }
-    // Calcula la abreviatura del mes y año en la secuencia de pagos
     function calcularMesAbrevSecuencialDMY(fechaInicialDMY, idx) {
       let fi = parseDateDMY(fechaInicialDMY);
       if (!fi) return "";
-      // Primer pago es para el mes siguiente (idx=0 => primer pago)
       let pagoDate = new Date(fi.getFullYear(), fi.getMonth()+1+idx, 1); // sumamos idx+1 meses
       const mesesAbrev = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       let nombreMes = mesesAbrev[pagoDate.getMonth()];
       let año = pagoDate.getFullYear();
       return nombreMes + ", " + año;
     }
-    // Cálculo de cuota nivelada mensual (anualidad)
     function calcularCuotaNivelada(principal, tasa, plazo){
       if(principal <= 0 || plazo <= 0) return 0;
       let tasaDecimal = parseFloat(tasa)/100;
@@ -185,7 +183,6 @@
       let abonosPrestamo = abonos
         .filter(a => a.Prestamo == idprestamo)
         .sort((a, b) => {
-          // Ordenar por Fecha de pago si existe, sino por Fecha
           let fa = parseDateDMY(a["Fecha de pago"] || a.Fecha || "");
           let fb = parseDateDMY(b["Fecha de pago"] || b.Fecha || "");
           return (fa?fa.getTime():0)-(fb?fb.getTime():0);
@@ -199,7 +196,7 @@
       for (let idx = 0; idx < abonosPrestamo.length; ++idx) {
         let ab = abonosPrestamo[idx];
         let fechaPago = ab["Fecha de pago"] || ab.Fecha;
-        let mesSecuencia = calcularMesAbrevSecuencialDMY(fechaAprobado, idx); // corregido, idx=0 => Primer mes despues de fecha inicial
+        let mesSecuencia = calcularMesAbrevSecuencialDMY(fechaAprobado, idx); // idx=0 => primer pago: mes siguiente
         let fecha = formatFechaDMY(fechaPago);
         let pago = parseNumber(ab.Monto);
         let capital = parseNumber(ab.Capital);
