@@ -21,11 +21,22 @@
     .cuota-saldo-area { width:100%; display:flex; flex-direction: column; align-items: flex-end; margin-bottom:5px; margin-top:6px;}
     .cuota-line { font-size: 16px; font-weight: bold; color: #1D70B7; padding-bottom:2px;}
     .saldo-inicial {font-size:16px; font-weight:bold; color:#d77f00;}
-    .pagos-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 0px; }
-    .pagos-table th, .pagos-table td { padding: 3px 6px; border: 1px solid #222; text-align: right;}
-    .pagos-table th { background: #f4f4f4; }
+    .pagos-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 0px; }
+    .pagos-table th, .pagos-table td { padding: 2px 3px; border: 1px solid #222; text-align: right;}
+    .pagos-table th { background: #f4f4f4; font-size: 12px !important;}
     .pagos-table tbody tr:nth-child(even) { background: #fafafa; }
     .pagos-table td.izq, .pagos-table th.izq { text-align: left; }
+    /* Ajuste de ancho de columnas */
+    .pagos-table th.fecha-col, .pagos-table td.fecha-col { width: 9%; }
+    .pagos-table th.mes-col, .pagos-table td.mes-col { width: 10%; }
+    .pagos-table th.pago-col, .pagos-table td.pago-col { width: 8%; }
+    .pagos-table th.nocol-col, .pagos-table td.nocol-col { width: 6%; }
+    .pagos-table th.capital-col, .pagos-table td.capital-col { width: 10%; }
+    .pagos-table th.int-col, .pagos-table td.int-col { width: 10%; }
+    .pagos-table th.cuota-col, .pagos-table td.cuota-col { width: 10%; }
+    .pagos-table th.mora-col, .pagos-table td.mora-col { width: 8%; }
+    .pagos-table th.abonocap-col, .pagos-table td.abonocap-col { width: 8%; }
+    .pagos-table th.saldo-col, .pagos-table td.saldo-col { width: 11%; }
     .pagos-table td.cuota-nivelada, .pagos-table th.cuota-nivelada { background: #ffe385; font-weight: bold; }
     .pagos-table td.saldo-actual { font-weight: bold; color: #e01313; background: #ffe385; }
     .monto-letras { text-align: left; font-weight: bold; font-size: 15px; margin: 3px 0 5px 0; }
@@ -33,6 +44,8 @@
       body, .estado-cuenta-container { background: #fff !important; }
       .estado-cuenta-container { page-break-after: always; }
       .fecha-contrato { color: #e01313 !important;}
+      .pagos-table { font-size: 10px !important;}
+      .pagos-table th { font-size: 11px !important;}
     }
   </style>
 </head>
@@ -58,7 +71,6 @@
       <span><b>Comprador(es):</b> <span id="NombreComprador"></span></span>
     </div>
     <div class="seccion-titulo">DESCRIPCIÓN DEL LOTE / PRÉSTAMO</div>
-    <!-- Ajustado distribución de campos -->
     <table class="desc-lote-table-custom">
       <tr>
         <td class="desc-lote-left">
@@ -86,16 +98,16 @@
     <table class="pagos-table" id="pagosTable">
       <thead>
         <tr>
-          <th class="izq">Fecha</th>
-          <th>Mes</th>
-          <th>Pago</th>
-          <th>No.</th>
-          <th>Capital</th>
-          <th>Interés</th>
-          <th>Cuota</th>
-          <th>Mora</th>
-          <th>Abono Capital</th>
-          <th class="saldo-actual">Saldo Actual</th>
+          <th class="izq fecha-col">Fecha</th>
+          <th class="mes-col">Mes</th>
+          <th class="pago-col">Pago</th>
+          <th class="nocol-col">No.</th>
+          <th class="capital-col">Capital</th>
+          <th class="int-col">Interés</th>
+          <th class="cuota-col">Cuota</th>
+          <th class="mora-col">Mora</th>
+          <th class="abonocap-col">Abono Capital</th>
+          <th class="saldo-col saldo-actual">Saldo Actual</th>
         </tr>
       </thead>
       <tbody id="detallePagosBody"></tbody>
@@ -136,7 +148,7 @@
     function calcularMesAbrevSecuencialDMY(fechaInicialDMY, idx) {
       let fi = parseDateDMY(fechaInicialDMY);
       if (!fi) return "";
-      let pagoDate = new Date(fi.getFullYear(), fi.getMonth()+1+idx, 1); // sumamos idx+1 meses
+      let pagoDate = new Date(fi.getFullYear(), fi.getMonth()+1+idx, 1);
       const mesesAbrev = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       let nombreMes = mesesAbrev[pagoDate.getMonth()];
       let año = pagoDate.getFullYear();
@@ -196,7 +208,7 @@
       for (let idx = 0; idx < abonosPrestamo.length; ++idx) {
         let ab = abonosPrestamo[idx];
         let fechaPago = ab["Fecha de pago"] || ab.Fecha;
-        let mesSecuencia = calcularMesAbrevSecuencialDMY(fechaAprobado, idx); // idx=0 => primer pago: mes siguiente
+        let mesSecuencia = calcularMesAbrevSecuencialDMY(fechaAprobado, idx);
         let fecha = formatFechaDMY(fechaPago);
         let pago = parseNumber(ab.Monto);
         let capital = parseNumber(ab.Capital);
@@ -209,21 +221,22 @@
         saldoActual -= capital + abonoCapital;
 
         let fila = tbody.insertRow(-1);
-        fila.insertCell().className = "izq"; fila.cells[0].textContent = fecha;
-        fila.insertCell().textContent = mesSecuencia;
-        fila.insertCell().textContent = formatCurrency(pago);
-        fila.insertCell().textContent = noCuota;
-        fila.insertCell().textContent = formatCurrency(capital);
-        fila.insertCell().textContent = formatCurrency(interes);
-        fila.insertCell().textContent = formatCurrency(cuota);
-        fila.insertCell().textContent = formatCurrency(mora);
-        fila.insertCell().textContent = formatCurrency(abonoCapital);
-        fila.insertCell().className = "saldo-actual"; fila.cells[9].textContent = formatCurrency(saldoActual);
+        fila.insertCell().className = "izq fecha-col"; fila.cells[0].textContent = fecha;
+        fila.insertCell().className = "mes-col"; fila.cells[1].textContent = mesSecuencia;
+        fila.insertCell().className = "pago-col"; fila.cells[2].textContent = formatCurrency(pago);
+        fila.insertCell().className = "nocol-col"; fila.cells[3].textContent = noCuota;
+        fila.insertCell().className = "capital-col"; fila.cells[4].textContent = formatCurrency(capital);
+        fila.insertCell().className = "int-col"; fila.cells[5].textContent = formatCurrency(interes);
+        fila.insertCell().className = "cuota-col"; fila.cells[6].textContent = formatCurrency(cuota);
+        fila.insertCell().className = "mora-col"; fila.cells[7].textContent = formatCurrency(mora);
+        fila.insertCell().className = "abonocap-col"; fila.cells[8].textContent = formatCurrency(abonoCapital);
+        fila.insertCell().className = "saldo-col saldo-actual"; fila.cells[9].textContent = formatCurrency(saldoActual);
       }
       if(abonosPrestamo.length===0){
         let fila = tbody.insertRow(0);
-        for(let c=0;c<9;c++) fila.insertCell().textContent = '';
-        fila.insertCell().className = "saldo-actual"; fila.cells[9].textContent = formatCurrency(saldoActual);
+        for(let c=0;c<10;c++) fila.insertCell().textContent = '';
+        fila.cells[9].className = "saldo-col saldo-actual";
+        fila.cells[9].textContent = formatCurrency(saldoActual);
       }
       setTimeout(function(){window.print();},600);
     }
