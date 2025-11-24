@@ -23,8 +23,8 @@
     .cuota-line { font-size: 16px; font-weight: bold; color: #1D70B7; padding-bottom:2px;}
     .saldo-inicial {font-size:16px; font-weight:bold; color:#d77f00;}
     .pagos-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 0px; }
-    .pagos-table th, .pagos-table td { padding: 2px 4px; border: 1px solid #222; text-align: right; white-space:nowrap; }
-    .pagos-table th { background: #f4f4f4; font-size: 12px !important;}
+    .pagos-table th { padding: 2px 4px; border: 1px solid #222; background: #f4f4f4; font-size: 12px !important; text-align: center !important; white-space:nowrap; }
+    .pagos-table td { padding: 2px 4px; border: 1px solid #222; text-align: right; white-space:nowrap; }
     .pagos-table tbody tr:nth-child(even) { background: #fafafa; }
     .pagos-table td.izq, .pagos-table th.izq { text-align: left; white-space:normal; }
     /* Ajuste de ancho de columnas */
@@ -212,7 +212,6 @@
       let valorFinanciado = monto - prima;
       let plazo = parseInt(prestamo.Plazo) || 0;
       let tasaRaw = prestamo.Tasa !== undefined && prestamo.Tasa !== "" ? prestamo.Tasa : 0;
-      let tasa = parseNumber(tasaRaw);
       let cuotaNivelada = calcularCuotaNivelada(valorFinanciado, tasaRaw, plazo);
 
       document.getElementById("NombreCliente").textContent = prestamo.NombreCliente || "";
@@ -246,8 +245,14 @@
 
       let fechaAprobado = prestamo.FechaAprobado;
 
+      // Usaremos un contador para la columna "No." que se calcula automáticamente
+      let contadorNo = 0;
+
       for (let idx = 0; idx < abonosPrestamo.length; ++idx) {
         let ab = abonosPrestamo[idx];
+
+        // Incrementar contador solo para filas efectivas (ya filtradas)
+        contadorNo += 1;
         // Fecha que se muestra en la columna "Fecha" viene del campo "Fecha" (dd/mm/yyyy)
         let fechaMostrar = formatFechaDMY(ab.Fecha);
         // Mes se calcula de forma consecutiva desde FechaAprobado (idx = 0 => primer pago => mes siguiente)
@@ -259,7 +264,8 @@
         let cuota = ab.Cuota ? parseNumber(ab.Cuota) : 0;
         let mora = ab.Recargo ? parseNumber(ab.Recargo) : 0;
         let abonoCapital = ab["Abono capital"] ? parseNumber(ab["Abono capital"]) : 0;
-        let noCuota = ab["No cuota"] || (idx + 1);
+        // No. ahora calculado automáticamente: contadorNo
+        let noCuota = contadorNo;
 
         saldoActual -= capital + abonoCapital;
 
