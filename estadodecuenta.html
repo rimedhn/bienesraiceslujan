@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ESTADO DE CUENTA - CLIENTE</title>
   <link rel="icon" href="https://github.com/rimedhn/bienesraiceslujan/blob/main/Logo%20Bienes%20Raices%20Lujan.png?raw=true" type="image/x-icon">
   <style>
@@ -131,7 +131,6 @@
     function fetchJSON(url){ return fetch(url).then(r=>r.json()); }
 
     function formatCurrency(num){ if(isNaN(num))return "L 0.00"; return "L "+parseFloat(num).toLocaleString('es-HN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-    function formatNumberWithSeparators(num){ if(isNaN(num)) return "0.00"; return parseFloat(num).toLocaleString('es-HN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
     function parseNumber(val){ if(val==undefined || val==null) return 0; val=(""+val).replace("L","").replace("$","").replace(/,/g,"").trim(); return parseFloat(val)||0; }
 
     // Parse dd/mm/yyyy -> Date
@@ -157,12 +156,17 @@
       return dd+"/"+mm+"/"+yyyy;
     }
 
-    // Obtener Mes (abreviado) desde el campo "Fecha de pago" (dd/mm/yyyy)
-    function mesDesdeFechaPagoDMY(fechaPagoDMY) {
-      let d = parseDateDMY(fechaPagoDMY);
-      if (!d) return "";
-      const mesesAbrev = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return mesesAbrev[d.getMonth()] + ", " + d.getFullYear();
+    // Calcula la abreviatura del mes y año en la secuencia de pagos
+    // idx: 0 => primer pago (mes siguiente a la fecha inicial)
+    function calcularMesAbrevSecuencialDMY(fechaInicialDMY, idx) {
+      let fi = parseDateDMY(fechaInicialDMY);
+      if (!fi) return "";
+      // Primer pago corresponde al mes siguiente
+      let pagoDate = new Date(fi.getFullYear(), fi.getMonth() + 1 + idx, 1);
+      const mesesAbrev = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      let nombreMes = mesesAbrev[pagoDate.getMonth()];
+      let año = pagoDate.getFullYear();
+      return nombreMes + ", " + año;
     }
 
     // Cálculo de cuota nivelada mensual (anualidad)
@@ -188,7 +192,7 @@
       let prestamo = prestamos.find(p => String(p.idprestamo) == String(idprestamo));
       if (!prestamo) { alert("Préstamo no encontrado."); return; }
 
-      // Valores y formato con separador de miles
+      // Valores y formato con separador de miles (con prefijo L)
       let monto = parseNumber(prestamo.Monto);
       let prima = parseNumber(prestamo.Prima);
       let valorFinanciado = monto - prima;
@@ -200,10 +204,9 @@
       document.getElementById("NombreComprador").textContent = prestamo.NombreComprador || "";
       document.getElementById("NombreLotificacion").textContent = prestamo.NombreLotificacion || "";
       document.getElementById("NoLoteybloque").textContent = prestamo.NoLoteybloque || "";
-      // Mostrar con separadores de miles (sin prefijo monetario)
-      document.getElementById("Monto").textContent = formatNumberWithSeparators(monto);
-      document.getElementById("Prima").textContent = formatNumberWithSeparators(prima);
-      document.getElementById("Financiado").textContent = formatNumberWithSeparators(valorFinanciado);
+      document.getElementById("Monto").textContent = formatCurrency(monto);
+      document.getElementById("Prima").textContent = formatCurrency(prima);
+      document.getElementById("Financiado").textContent = formatCurrency(valorFinanciado);
       document.getElementById("PlazoLetras").textContent = (prestamo.Plazo ? prestamo.Plazo + " Meses" : "");
       document.getElementById("FechaAprobado").textContent = formatFechaDMY(prestamo.FechaAprobado);
 
@@ -212,7 +215,7 @@
       document.getElementById("CuotaNiveladaCalculo").textContent = formatCurrency(cuotaNivelada);
       document.getElementById("SaldoInicial").textContent = formatCurrency(valorFinanciado);
 
-      // Ordenar abonos por campo Fecha (dd/mm/yyyy) para consistencia en lista
+      // Ordenar abonos por campo Fecha (dd/mm/yyyy)
       let abonosPrestamo = abonos
         .filter(a => String(a.Prestamo) == String(idprestamo))
         .sort((a,b) => {
@@ -225,15 +228,14 @@
       let tbody = document.getElementById("detallePagosBody");
       tbody.innerHTML = "";
 
+      let fechaAprobado = prestamo.FechaAprobado;
+
       for (let idx = 0; idx < abonosPrestamo.length; ++idx) {
         let ab = abonosPrestamo[idx];
-        // Fecha que se muestra en la columna "Fecha" viene del campo "Fecha"
+        // Fecha que se muestra en la columna "Fecha" viene del campo "Fecha" (dd/mm/yyyy)
         let fechaMostrar = formatFechaDMY(ab.Fecha);
-        // Mes se toma desde "Fecha de pago" tal como pediste (no la secuencia)
-        let fechaPagoCampo = ab["Fecha de pago"] || "";
-        let mesMostrar = mesDesdeFechaPagoDMY(fechaPagoCampo);
-        // Si "Fecha de pago" no existe, intentar usar Fecha
-        if (!mesMostrar || mesMostrar === "") mesMostrar = mesDesdeFechaPagoDMY(ab.Fecha);
+        // Mes se calcula de forma consecutiva desde FechaAprobado (idx = 0 => primer pago => mes siguiente)
+        let mesMostrar = calcularMesAbrevSecuencialDMY(fechaAprobado, idx);
 
         let pago = parseNumber(ab.Monto);
         let capital = parseNumber(ab.Capital);
