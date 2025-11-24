@@ -19,19 +19,20 @@
     .desc-lote-left { width:55%; }
     .desc-lote-right { width:45%; text-align: right; }
     .cuota-saldo-area { width:100%; display:flex; flex-direction: column; align-items: flex-end; margin-bottom:5px; margin-top:6px;}
+    .tasa-line { font-size:14px; color:#333; margin-bottom:4px; }
     .cuota-line { font-size: 16px; font-weight: bold; color: #1D70B7; padding-bottom:2px;}
     .saldo-inicial {font-size:16px; font-weight:bold; color:#d77f00;}
     .pagos-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 0px; }
-    .pagos-table th, .pagos-table td { padding: 2px 3px; border: 1px solid #222; text-align: right;}
+    .pagos-table th, .pagos-table td { padding: 2px 4px; border: 1px solid #222; text-align: right; white-space:nowrap; }
     .pagos-table th { background: #f4f4f4; font-size: 12px !important;}
     .pagos-table tbody tr:nth-child(even) { background: #fafafa; }
-    .pagos-table td.izq, .pagos-table th.izq { text-align: left; }
+    .pagos-table td.izq, .pagos-table th.izq { text-align: left; white-space:normal; }
     /* Ajuste de ancho de columnas */
     .pagos-table th.fecha-col, .pagos-table td.fecha-col { width: 9%; }
-    .pagos-table th.mes-col, .pagos-table td.mes-col { width: 10%; }
+    .pagos-table th.mes-col, .pagos-table td.mes-col { width: 12%; }
     .pagos-table th.pago-col, .pagos-table td.pago-col { width: 8%; }
-    .pagos-table th.nocol-col, .pagos-table td.nocol-col { width: 6%; }
-    .pagos-table th.capital-col, .pagos-table td.capital-col { width: 10%; }
+    .pagos-table th.nocol-col, .pagos-table td.nocol-col { width: 5%; }
+    .pagos-table th.capital-col, .pagos-table td.capital-col { width: 11%; }
     .pagos-table th.int-col, .pagos-table td.int-col { width: 10%; }
     .pagos-table th.cuota-col, .pagos-table td.cuota-col { width: 10%; }
     .pagos-table th.mora-col, .pagos-table td.mora-col { width: 8%; }
@@ -44,8 +45,8 @@
       body, .estado-cuenta-container { background: #fff !important; }
       .estado-cuenta-container { page-break-after: always; }
       .fecha-contrato { color: #e01313 !important;}
-      .pagos-table { font-size: 10px !important;}
-      .pagos-table th { font-size: 11px !important;}
+      .pagos-table { font-size: 10px !important; }
+      .pagos-table th { font-size: 11px !important; }
     }
   </style>
 </head>
@@ -70,13 +71,15 @@
       <span><b>Cliente/Estipulante:</b> <span id="NombreCliente"></span></span><br>
       <span><b>Comprador(es):</b> <span id="NombreComprador"></span></span>
     </div>
+
     <div class="seccion-titulo">DESCRIPCIÓN DEL LOTE / PRÉSTAMO</div>
+    <!-- Ajustado distribución de campos -->
     <table class="desc-lote-table-custom">
       <tr>
         <td class="desc-lote-left">
-          <b>Valor del terreno:</b> L<span id="Monto"></span><br>
-          <b>Valor de la Prima:</b> L<span id="Prima"></span><br>
-          <b>Valor Financiado:</b> L<span id="Financiado"></span>
+          <b>Valor del terreno:</b> <span id="Monto"></span><br>
+          <b>Valor de la Prima:</b> <span id="Prima"></span><br>
+          <b>Valor Financiado:</b> <span id="Financiado"></span>
         </td>
         <td class="desc-lote-right">
           <b>Lotificación:</b> <span id="NombreLotificacion"></span><br>
@@ -90,22 +93,25 @@
         </td>
       </tr>
     </table>
+
     <div class="seccion-titulo" style="margin-top:20px;">Detalle de pagos</div>
     <div class="cuota-saldo-area">
-      <div class="cuota-line">Cuota Nivelada Mensual: <span id="CuotaNiveladaCalculo"></span></div>
-      <div class="saldo-inicial">Saldo Inicial: <span id="SaldoInicial"></span></div>
+      <div class="tasa-line">Tasa: <span id="TasaDisplay"></span></div>
+      <div class="cuota-line">CUOTA NIVELADA MENSUAL: <span id="CuotaNiveladaCalculo"></span></div>
+      <div class="saldo-inicial">SALDO INICIAL: <span id="SaldoInicial"></span></div>
     </div>
+
     <table class="pagos-table" id="pagosTable">
       <thead>
         <tr>
-          <th class="izq fecha-col">Fecha pago</th>
-          <th class="mes-col">Mes pagado</th>
+          <th class="izq fecha-col">Fecha</th>
+          <th class="mes-col">Mes</th>
           <th class="pago-col">Pago</th>
           <th class="nocol-col">No.</th>
           <th class="capital-col">Capital</th>
           <th class="int-col">Interés</th>
           <th class="cuota-col">Cuota</th>
-          <th class="mora-col">Recargo mora</th>
+          <th class="mora-col">Mora</th>
           <th class="abonocap-col">Abono Capital</th>
           <th class="saldo-col saldo-actual">Saldo Actual</th>
         </tr>
@@ -113,25 +119,22 @@
       <tbody id="detallePagosBody"></tbody>
     </table>
   </div>
+
   <script>
     const openSheetPrestamo = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Prestamo";
     const openSheetAbono = "https://opensheet.elk.sh/1btdSW67kQkSbKRo8PszEGqOwlA6c7o8gi-gSLdT93hE/Abono prestamo";
+
     function getQueryParam(param) {
       var urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
     function fetchJSON(url){ return fetch(url).then(r=>r.json()); }
+
     function formatCurrency(num){ if(isNaN(num))return "L 0.00"; return "L "+parseFloat(num).toLocaleString('es-HN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-    function parseNumber(val){ val=(""+val).replace("L","").replace("$","").replace(",","").trim(); return parseFloat(val)||0; }
-    function formatFechaDMY(fechaStr){
-      let d = parseDateDMY(fechaStr);
-      if (!d) return fechaStr;
-      let dd = d.getDate()>9?d.getDate():"0"+d.getDate();
-      let mm = (d.getMonth()+1)>9?(d.getMonth()+1):"0"+(d.getMonth()+1);
-      let yyyy=d.getFullYear();
-      return dd+"/"+mm+"/"+yyyy;
-    }
-    // Parse dd/mm/yyyy
+    function formatNumberWithSeparators(num){ if(isNaN(num)) return "0.00"; return parseFloat(num).toLocaleString('es-HN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+    function parseNumber(val){ if(val==undefined || val==null) return 0; val=(""+val).replace("L","").replace("$","").replace(/,/g,"").trim(); return parseFloat(val)||0; }
+
+    // Parse dd/mm/yyyy -> Date
     function parseDateDMY(s) {
       if (!s) return null;
       let parts = s.split("/");
@@ -145,71 +148,93 @@
       }
       return null;
     }
-    function calcularMesAbrevSecuencialDMY(fechaInicialDMY, idx) {
-      let fi = parseDateDMY(fechaInicialDMY);
-      if (!fi) return "";
-      let pagoDate = new Date(fi.getFullYear(), fi.getMonth()+1+idx, 1);
-      const mesesAbrev = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      let nombreMes = mesesAbrev[pagoDate.getMonth()];
-      let año = pagoDate.getFullYear();
-      return nombreMes + ", " + año;
+    function formatFechaDMY(fechaStr){
+      let d = parseDateDMY(fechaStr);
+      if (!d) return fechaStr || "";
+      let dd = d.getDate()>9?d.getDate():"0"+d.getDate();
+      let mm = (d.getMonth()+1)>9?(d.getMonth()+1):"0"+(d.getMonth()+1);
+      let yyyy=d.getFullYear();
+      return dd+"/"+mm+"/"+yyyy;
     }
+
+    // Obtener Mes (abreviado) desde el campo "Fecha de pago" (dd/mm/yyyy)
+    function mesDesdeFechaPagoDMY(fechaPagoDMY) {
+      let d = parseDateDMY(fechaPagoDMY);
+      if (!d) return "";
+      const mesesAbrev = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return mesesAbrev[d.getMonth()] + ", " + d.getFullYear();
+    }
+
+    // Cálculo de cuota nivelada mensual (anualidad)
     function calcularCuotaNivelada(principal, tasa, plazo){
       if(principal <= 0 || plazo <= 0) return 0;
       let tasaDecimal = parseFloat(tasa)/100;
-      if(isNaN(tasaDecimal) || tasaDecimal==0) return principal/plazo;
+      if(isNaN(tasaDecimal) || tasaDecimal===0) return principal/plazo;
       let r = tasaDecimal;
       let n = plazo;
       let cuota = principal * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n)-1);
       return cuota;
     }
+
     async function loadEstadoCuenta() {
       let idprestamo = getQueryParam('idprestamo');
       if (!idprestamo) { alert("Falta el parámetro idprestamo."); return; }
+
       let [prestamos, abonos] = await Promise.all([
         fetchJSON(openSheetPrestamo),
         fetchJSON(openSheetAbono)
       ]);
-      let prestamo = prestamos.find(p => p.idprestamo == idprestamo);
+
+      let prestamo = prestamos.find(p => String(p.idprestamo) == String(idprestamo));
       if (!prestamo) { alert("Préstamo no encontrado."); return; }
+
+      // Valores y formato con separador de miles
       let monto = parseNumber(prestamo.Monto);
       let prima = parseNumber(prestamo.Prima);
       let valorFinanciado = monto - prima;
-      let plazo = parseInt(prestamo.Plazo);
-      let tasa = parseNumber(prestamo.Tasa);
+      let plazo = parseInt(prestamo.Plazo) || 0;
+      let tasa = prestamo.Tasa !== undefined && prestamo.Tasa !== "" ? parseNumber(prestamo.Tasa) : 0;
       let cuotaNivelada = calcularCuotaNivelada(valorFinanciado, tasa, plazo);
 
       document.getElementById("NombreCliente").textContent = prestamo.NombreCliente || "";
       document.getElementById("NombreComprador").textContent = prestamo.NombreComprador || "";
       document.getElementById("NombreLotificacion").textContent = prestamo.NombreLotificacion || "";
       document.getElementById("NoLoteybloque").textContent = prestamo.NoLoteybloque || "";
-      document.getElementById("Monto").textContent = monto.toFixed(2);
-      document.getElementById("Prima").textContent = prima.toFixed(2);
-      document.getElementById("Financiado").textContent = valorFinanciado.toFixed(2);
+      // Mostrar con separadores de miles (sin prefijo monetario)
+      document.getElementById("Monto").textContent = formatNumberWithSeparators(monto);
+      document.getElementById("Prima").textContent = formatNumberWithSeparators(prima);
+      document.getElementById("Financiado").textContent = formatNumberWithSeparators(valorFinanciado);
       document.getElementById("PlazoLetras").textContent = (prestamo.Plazo ? prestamo.Plazo + " Meses" : "");
       document.getElementById("FechaAprobado").textContent = formatFechaDMY(prestamo.FechaAprobado);
 
+      // Tasa mostrada arriba de la cuota nivelada
+      document.getElementById("TasaDisplay").textContent = (isNaN(tasa) ? "0" : tasa) + " %";
       document.getElementById("CuotaNiveladaCalculo").textContent = formatCurrency(cuotaNivelada);
       document.getElementById("SaldoInicial").textContent = formatCurrency(valorFinanciado);
 
+      // Ordenar abonos por campo Fecha (dd/mm/yyyy) para consistencia en lista
       let abonosPrestamo = abonos
-        .filter(a => a.Prestamo == idprestamo)
-        .sort((a, b) => {
-          let fa = parseDateDMY(a["Fecha de pago"] || a.Fecha || "");
-          let fb = parseDateDMY(b["Fecha de pago"] || b.Fecha || "");
-          return (fa?fa.getTime():0)-(fb?fb.getTime():0);
+        .filter(a => String(a.Prestamo) == String(idprestamo))
+        .sort((a,b) => {
+          let fa = parseDateDMY(a.Fecha || "") || new Date(0);
+          let fb = parseDateDMY(b.Fecha || "") || new Date(0);
+          return fa - fb;
         });
 
       let saldoActual = valorFinanciado;
       let tbody = document.getElementById("detallePagosBody");
       tbody.innerHTML = "";
 
-      let fechaAprobado = prestamo.FechaAprobado;
       for (let idx = 0; idx < abonosPrestamo.length; ++idx) {
         let ab = abonosPrestamo[idx];
-        let fechaPago = ab["Fecha de pago"] || ab.Fecha;
-        let mesSecuencia = calcularMesAbrevSecuencialDMY(fechaAprobado, idx);
-        let fecha = formatFechaDMY(fechaPago);
+        // Fecha que se muestra en la columna "Fecha" viene del campo "Fecha"
+        let fechaMostrar = formatFechaDMY(ab.Fecha);
+        // Mes se toma desde "Fecha de pago" tal como pediste (no la secuencia)
+        let fechaPagoCampo = ab["Fecha de pago"] || "";
+        let mesMostrar = mesDesdeFechaPagoDMY(fechaPagoCampo);
+        // Si "Fecha de pago" no existe, intentar usar Fecha
+        if (!mesMostrar || mesMostrar === "") mesMostrar = mesDesdeFechaPagoDMY(ab.Fecha);
+
         let pago = parseNumber(ab.Monto);
         let capital = parseNumber(ab.Capital);
         let interes = ab.Interes ? parseNumber(ab.Interes) : 0;
@@ -221,8 +246,8 @@
         saldoActual -= capital + abonoCapital;
 
         let fila = tbody.insertRow(-1);
-        fila.insertCell().className = "izq fecha-col"; fila.cells[0].textContent = fecha;
-        fila.insertCell().className = "mes-col"; fila.cells[1].textContent = mesSecuencia;
+        fila.insertCell().className = "izq fecha-col"; fila.cells[0].textContent = fechaMostrar;
+        fila.insertCell().className = "mes-col"; fila.cells[1].textContent = mesMostrar;
         fila.insertCell().className = "pago-col"; fila.cells[2].textContent = formatCurrency(pago);
         fila.insertCell().className = "nocol-col"; fila.cells[3].textContent = noCuota;
         fila.insertCell().className = "capital-col"; fila.cells[4].textContent = formatCurrency(capital);
@@ -232,14 +257,18 @@
         fila.insertCell().className = "abonocap-col"; fila.cells[8].textContent = formatCurrency(abonoCapital);
         fila.insertCell().className = "saldo-col saldo-actual"; fila.cells[9].textContent = formatCurrency(saldoActual);
       }
-      if(abonosPrestamo.length===0){
+
+      if (abonosPrestamo.length === 0) {
         let fila = tbody.insertRow(0);
-        for(let c=0;c<10;c++) fila.insertCell().textContent = '';
+        for (let c=0; c<10; c++) fila.insertCell().textContent = '';
         fila.cells[9].className = "saldo-col saldo-actual";
         fila.cells[9].textContent = formatCurrency(saldoActual);
       }
-      setTimeout(function(){window.print();},600);
+
+      // Auto print after render
+      setTimeout(function(){ window.print(); }, 600);
     }
+
     window.onload = loadEstadoCuenta;
   </script>
 </body>
