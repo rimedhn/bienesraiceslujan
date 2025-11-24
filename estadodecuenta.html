@@ -231,9 +231,9 @@
       document.getElementById("CuotaNiveladaCalculo").textContent = formatCurrency(cuotaNivelada);
       document.getElementById("SaldoInicial").textContent = formatCurrency(valorFinanciado);
 
-      // Ordenar abonos por campo Fecha (dd/mm/yyyy)
+      // Ordenar abonos por campo Fecha (dd/mm/yyyy) y excluir Estado "Anulado"
       let abonosPrestamo = abonos
-        .filter(a => String(a.Prestamo) == String(idprestamo))
+        .filter(a => String(a.Prestamo) == String(idprestamo) && String((a.Estado||"")).trim().toLowerCase() !== "anulado")
         .sort((a,b) => {
           let fa = parseDateDMY(a.Fecha || "") || new Date(0);
           let fb = parseDateDMY(b.Fecha || "") || new Date(0);
