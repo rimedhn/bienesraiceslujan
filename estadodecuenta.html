@@ -169,14 +169,28 @@
       return nombreMes + ", " + año;
     }
 
-    // Cálculo de cuota nivelada mensual (anualidad)
-    function calcularCuotaNivelada(principal, tasa, plazo){
+    // Cálculo de cuota nivelada mensual (anualidad) — ahora detecta si Tasa es anual y la convierte a tasa mensual
+    function calcularCuotaNivelada(principal, tasaCampo, plazo){
       if(principal <= 0 || plazo <= 0) return 0;
-      let tasaDecimal = parseFloat(tasa)/100;
-      if(isNaN(tasaDecimal) || tasaDecimal===0) return principal/plazo;
-      let r = tasaDecimal;
-      let n = plazo;
-      let cuota = principal * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n)-1);
+      let tasaNum = parseFloat(tasaCampo);
+      if (isNaN(tasaNum) || tasaNum === 0) return principal / plazo;
+
+      // Interpretación:
+      // - si tasaNum > 1: se asume porcentaje anual (ej. 15 -> 15% anual)
+      // - si tasaNum > 0 && tasaNum <= 1: se asume decimal anual (ej. 0.15 -> 15% anual)
+      // Convertimos a tasa mensual en decimal
+      let tasaAnualDecimal;
+      if (tasaNum > 1) tasaAnualDecimal = tasaNum / 100.0;
+      else tasaAnualDecimal = tasaNum; // ya decimal anual
+
+      let tasaMensual = tasaAnualDecimal / 12.0;
+      let r = tasaMensual; // tasa mensual en decimal
+      let n = plazo; // meses
+
+      // fórmula de anualidad: cuota = P * (r(1+r)^n) / ((1+r)^n - 1)
+      if (r === 0) return principal / n;
+      let pow = Math.pow(1 + r, n);
+      let cuota = principal * (r * pow) / (pow - 1);
       return cuota;
     }
 
@@ -197,8 +211,9 @@
       let prima = parseNumber(prestamo.Prima);
       let valorFinanciado = monto - prima;
       let plazo = parseInt(prestamo.Plazo) || 0;
-      let tasa = prestamo.Tasa !== undefined && prestamo.Tasa !== "" ? parseNumber(prestamo.Tasa) : 0;
-      let cuotaNivelada = calcularCuotaNivelada(valorFinanciado, tasa, plazo);
+      let tasaRaw = prestamo.Tasa !== undefined && prestamo.Tasa !== "" ? prestamo.Tasa : 0;
+      let tasa = parseNumber(tasaRaw);
+      let cuotaNivelada = calcularCuotaNivelada(valorFinanciado, tasaRaw, plazo);
 
       document.getElementById("NombreCliente").textContent = prestamo.NombreCliente || "";
       document.getElementById("NombreComprador").textContent = prestamo.NombreComprador || "";
@@ -210,8 +225,9 @@
       document.getElementById("PlazoLetras").textContent = (prestamo.Plazo ? prestamo.Plazo + " Meses" : "");
       document.getElementById("FechaAprobado").textContent = formatFechaDMY(prestamo.FechaAprobado);
 
-      // Tasa mostrada arriba de la cuota nivelada
-      document.getElementById("TasaDisplay").textContent = (isNaN(tasa) ? "0" : tasa) + " %";
+      // Mostrar la tasa tal como vino (pero formateada)
+      let tasaDisplay = (tasaRaw === null || tasaRaw === undefined || String(tasaRaw).trim() === "") ? "0 %" : (String(tasaRaw).trim() + (String(tasaRaw).toString().includes("%") ? "" : " %"));
+      document.getElementById("TasaDisplay").textContent = tasaDisplay;
       document.getElementById("CuotaNiveladaCalculo").textContent = formatCurrency(cuotaNivelada);
       document.getElementById("SaldoInicial").textContent = formatCurrency(valorFinanciado);
 
