@@ -5,121 +5,241 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>CONTRATO DE PROMESA DE VENTA</title>
   <style>
-    body { font-family: Arial, sans-serif; font-size: 14px; margin: 25px; white-space: pre-wrap; line-height: 1.25; }
-    .signature { margin-top: 12px; }
-    .hrline { border-top: 1px solid #000; width: 100%; margin: 10px 0; height: 1px; }
-    .buyer-block { margin-top: 18px; text-align: center; }
-    .buyer-name { margin-top: 6px; font-weight: normal; }
-    .center { text-align: center; }
+    /* Global typography */
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      margin: 30px;
+      -webkit-print-color-adjust: exact;
+    }
+
+    /* Container for the main contract text */
+    #content {
+      text-align: justify;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    /* Title styling: centered and bold */
+    .title {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 12px;
+      font-size: 12px; /* requested overall size 12 */
+    }
+
+    /* Inline field placeholders */
+    [data-field] {
+      /* default normal weight; specific fields will be rendered bold by the script when needed */
+    }
+
+    /* Signature layout */
+    .signatures-top {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 28px;
+      gap: 10px;
+    }
+
+    .sig {
+      width: 48%;
+      text-align: center;
+    }
+
+    .sig .hrline {
+      border-top: 1px solid #000;
+      height: 1px;
+      margin-top: 28px;
+    }
+
+    .sig .name {
+      margin-top: 6px;
+      font-weight: bold;
+    }
+
+    .sig .role {
+      margin-top: 2px;
+    }
+
+    /* Buyers signatures: centered blocks, one per buyer */
+    #buyers {
+      margin-top: 22px;
+    }
+
+    .buyer-block {
+      text-align: center;
+      margin-top: 18px;
+      page-break-inside: avoid;
+    }
+
+    .buyer-block .hrline {
+      border-top: 1px solid #000;
+      width: 60%;
+      margin: 18px auto 8px auto;
+      height: 1px;
+    }
+
+    .buyer-block .buyer-name {
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    .buyer-block .buyer-role {
+      margin-top: 2px;
+      font-style: normal;
+    }
+
+    /* Prevent signature blocks from collapsing at page breaks */
+    .sig, .buyer-block { break-inside: avoid; }
+
+    /* Print adjustments */
+    @media print {
+      body { margin: 10mm; }
+    }
   </style>
 </head>
 <body>
-
-CONTRATO DE PROMESA DE VENTA
-
+  <div id="content">
+    <div class="title">CONTRATO DE PROMESA DE VENTA</div>
 
 NOSOTROS: <span data-field="Representante">&lt;&lt;Representante&gt;&gt;</span>, <span data-field="Datosrepresentante">&lt;&lt;Datosrepresentante&gt;&gt;</span> <span data-field="NombreEmpresa">&lt;&lt;NombreEmpresa&gt;&gt;</span>  <span data-field="DatosInstrumento">&lt;&lt;DatosInstrumento&gt;&gt;</span> <span data-field="DatosNotario">&lt;&lt;DatosNotario&gt;&gt;</span>, y  quien de aquí en adelante será denominado (a) como ÉL (LA) PROMINENTE VENDEDOR (A) y <span data-field="DatoCompradorContrato">&lt;&lt;DatoCompradorContrato&gt;&gt;</span>, hemos convenido en celebrar; como en efecto celebramos, el presente Contrato de Promesa de Venta, el cual se Regirá supletoriamente, por la legislación vigente de la República de Honduras que le sea aplicable y especialmente por las siguientes cláusulas y condiciones: PRIMERA: EL (LA) PROMINENTE VENDEDOR (A), en la condición con que actúa, manifiesta que su representado (a) es dueño (a) de un lote de terreno el cual se describe así: ubicado en  <span data-field="DatosLotificacionContrato">&lt;&lt;DatosLotificacionContrato&gt;&gt;</span> y del cual se <span data-field="IdentificacionLotesVentaContrato">&lt;&lt;IdentificacionLotesVentaContrato&gt;&gt;</span>  <span data-field="DatosLotesVentaContrato">&lt;&lt;DatosLotesVentaContrato&gt;&gt;</span> SEGUNDO: LA PROMINENTE VENDEDORA, en la condición con que actúa  por tenerlo así convenido, al precio y condiciones que se establecen en las cláusulas siguientes, por este acto da en promesa de Venta  <span data-field="AlProminenteComprador">&lt;&lt;AlProminenteComprador&gt;&gt;</span>, <span data-field="ElLosLotesDesccritos">&lt;&lt;ElLosLotesDesccritos&gt;&gt;</span> en la cláusula precedente,  <span data-field="QuienLoReciben">&lt;&lt;QuienLoReciben&gt;&gt;</span> a su entera satisfacción.-TERCERO: Continua manifestando EL (LA) PROMINENTE VENDEDOR (A), en la condición con que actúa, que el contrato de promesa de compraventa a ser suscrito, en ejecución de esta promesa de venta deberá incluir las condiciones restrictivas relacionadas con las obligaciones descritas en las cláusulas sub-siguientes de este contrato; asimismo, si por cualquier causa, el lote de terreno descrito en la cláusula primera de este contrato resultare con un área menor a la estipulada en la misma, es convenido y acepto expresamente por las partes que la menor cabida no dará lugar a la disolución de este contrato, o en su caso, del contrato de compraventa, si este ya se hubiese suscrito, pactándose que en dicha eventualidad será su obligación restituir  <span data-field="AlProminenteComprador">&lt;&lt;AlProminenteComprador&gt;&gt;</span>, sin pago de ningún valor en concepto perjuicios o intereses y al precio estipulado en los metros cuadrados o su equivalente en varas cuadradas que resulte de esta transacción, el valor equivalente al número de metros o de varas cuadradas que este en la imposibilidad de entregar <span data-field="AlProminenteComprador">&lt;&lt;AlProminenteComprador&gt;&gt;</span>; del mismo modo, si  el área entregada resultare mayor a la estipulada, <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> se obliga expresamente a pagar a EL (LA) PROMINENTE VENDEDOR (A) la diferencia  por la cual resultare deudor, al precio que por metros o vara cuadrada se haya estipulado; CUARTA: El precio de la venta total del lote de terreno será por <span data-field="MontoLetras">&lt;&lt;MontoLetras&gt;&gt;</span> LEMPIRAS EXACTOS (LPS  <span data-field="Monto">&lt;&lt;Monto&gt;&gt;</span>), de los cuales en este acto <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> hace entrega a EL (LA) PROMINENTE VENDEDOR (A), en la condición con que actúa, la cantidad de <span data-field="PrimaLetras">&lt;&lt;PrimaLetras&gt;&gt;</span> (LPS <span data-field="Prima">&lt;&lt;Prima&gt;&gt;</span>), en calidad de PRIMA quedando un saldo pendiente de <span data-field="FinanciadoLetras">&lt;&lt;FinanciadoLetras&gt;&gt;</span> LEMPIRAS EXACTOS (LPS <span data-field="Financiado">&lt;&lt;Financiado&gt;&gt;</span>) y pagara la cantidad en cuotas nivelas de <span data-field="CuotaLetras">&lt;&lt;CuotaLetras&gt;&gt;</span> (LPS: <span data-field="Cuota">&lt;&lt;Cuota&gt;&gt;</span>) durante <span data-field="PlazoLetras">&lt;&lt;PlazoLetras&gt;&gt;</span> MESES, contados a partir de la firma del presente contrato.  <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> podrá realizar en el momento que crea oportuno PAGOS PARA ABONAR A CAPITAL. -QUINTO El plazo para el cumplimiento en cuanto a la transferencia de dominio en escritura pública o suscripción de la compraventa se establecerá por los Abogados del BUFETE LUJAN Y ASOCIADOS, encargados del Proyecto, hasta la fecha en que se encuentre pagado la totalidad de la deuda por  <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>, corriendo por cuenta de <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>, los gastos de honorarios profesionales, timbres de contratación, impuestos de registro, impuesto sobre tradición, constancias catastrales, para obtener su escritura de compra y venta.-SEXTA: Durante el tiempo en que <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> no haya suscrito la escritura de compraventa, y pasado seis meses tendrá el derecho de ocupar el inmueble y a efectuar mejoras y construcciones en el mismo; sin embargo, la edificación de cualquier mejora o construcción, deberá hacerse con permiso previo de la autoridad municipal correspondiente y con conocimiento de EL (LA) PROMINENTE VENDEDOR (A), en la condición con que actúa. SEPTIMA: Estará a Cargo de <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>: A) Gestionar personalmente la instalación  de los Servicios Públicos al lote prometido en venta.-B) Pagar puntualmente las tasas  por servicios públicos como alumbrado eléctrico, agua potable, contribución por mejoras y demás servicios que recibiere, así como el pago del impuesto sobre bienes inmuebles y las demás cargas municipales que afecten el inmueble desde el momento de la suscripción del contrato.-C) Aceptar la servidumbre de paso de agua de lluvia, acueductos, electro ductos, ductos o cables telefónicos y demás similares que por razones topográficas deban pasar por el sub-suelo o el espacio aéreo de la propiedad.-D) Se compromete a que la tierra y demás materiales similares como desechos de construcción no sean arrojados en ninguna parte de la urbanización. Se prohíbe  <span data-field="AlProminenteComprador">&lt;&lt;AlProminenteComprador&gt;&gt;</span> a realizar actividades como batida de mezcla de concreto, mortero, repello u otro material necesario para la construcción, en o sobre las aceras, áreas verdes, calles, callejones sanitarios, lotes adyacentes, o cualquier lugar fuera del destino al lote objeto de este contrato, debido a los daños físicos y estéticos que causan. -OCTAVA: Por su parte EL (LA) PROMINENTE VENDEDOR (A), en la condición con que actúa por este acto se obliga a: 1) la electrificación e iluminación del proyecto, exceptuando la instalación y costos del servicio especifico para cada lote y el uso de medidores, los cuales correrán a cargo de  <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>. -2) la dotación del suministro global del agua potable, exceptuando los costos de instalación y el uso de medidores de agua para cada lote los cuales corren a cargo de <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> cuando sean necesario. NOVENA: Queda Prohibido <span data-field="AlProminenteComprador">&lt;&lt;AlProminenteComprador&gt;&gt;</span> y a sus descendientes: a) Utilizar el inmueble para fines de depósito de materiales inflamables, corrosivas o explosivas o para cantinas, bares o lenocinios o similares en que se expendan bebidas alcohólicas; b) Ceder el presente contrato y los derechos que de él se derivan y fraccionar el lote o los lotes, convertirlo en acceso o calle hacia otras áreas de la urbanización, colonias o predios vecinos, sin la autorización previa y por escrito de EL (LA) PROMINENTE VENDEDOR (A). c) Ocupar, tomar posesión detener áreas de terreno adicionales a las que corresponden al lote o los lotes objeto de este contrato, sean o no adyacentes al mismo, d) Realizar labores hogareñas como lavado de ropa, su secado, disposición de basura y las demás similares en condiciones que causen molestias y riesgos a la salud y a los bienes de los vecinos o que afectan el medio ambiente y la libre circulación peatonal y vehicular en las vías públicas, e) Instalar cualquier tipo de propaganda o cartelones y placas, excepto las comúnmente usadas para identificar al ocupante del inmueble, nomenclatura municipal y las profesionales siempre que se instalen dentro de la propiedad y para el cumplimiento de estas obligaciones,  <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> faculta a EL (LA) PROMINENTE VENDEDOR (A), en la condición con que actúa  o a quienes éste autorice para hacer inspecciones periódicas en el lote. DECIMA:  El plazo de este contrato es de <span data-field="PlazoLetras">&lt;&lt;PlazoLetras&gt;&gt;</span> MESES, contados a partir de la fecha de suscripción, al final del cual deberá verificarse la tradición de dominio en escritura publica de compra venta a favor de <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> y en caso de muertes de este, a favor de la persona o personas que legalmente deban sucederle por vía testamentaria o ab-intestato, previa acreditación de tales derechos con la presentación de la certificación judicial correspondiente debidamente inscrita en el libro de Sentencias del Registro de la propiedad que corresponda. Quedando entendido <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>, que en caso de incumplimiento de tres meses consecutivos o alternos en el pago de la mensualidades, este contrato se dará por terminado y todo lo que se haya pagado en concepto de prima o mensualidades, quedaran a favor de EL (LA) PROMINENTE VENDEDOR (A).- ASI MISMO SE COBRARA UN RECARGO MORATORIO DE <span data-field="RecargoLetras">&lt;&lt;RecargoLetras&gt;&gt;</span> (<span data-field="RecargoApp">&lt;&lt;RecargoApp&gt;&gt;</span>) SI PAGA DESPUES DEL CINCO DE CADA MES POR CUOTA RETRASADA.  DECIMO PRIMERA: En caso que <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> o sus herederos incumplieron con las obligaciones a su cargo o incurrieren en cualquiera de las prohibiciones estipuladas en el presente contrato, dará derecho a EL (LA) PROMINENTE VENDEDOR (A), en la condición con que actúa, en cualquiera de estas circunstancias, para dar por terminado de pleno derecho el presente  contrato y exigir la inmediata desocupación del inmueble, en cuyo caso los valores pagados por <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> y las mejoras introducidas quedarán a favor de EL (LA) PROMINENTE VENDEDOR (A), en la condición con que actúa, en concepto y a cuenta de daños y perjuicios. DECIMO SEGUNDA: Queda expresamente convenido y así lo acepta <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>. a) Que la conformación o nivelación del lote objeto de este contrato, construcción de muros o cualquiera otra tendencia a prepararlo para la construcción de mejoras, estarán a cargo de  <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>. b) que este contrato tendrá efectos a partir de la fecha de suscripción; independiente de la fecha en que materialmente <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>  reciba el lote o los lotes de terreno dado en promesa de venta. c)  La construcción de muros perimetrales que privaticen el lote prometido en venta, será responsabilidad de  <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>. -DECIMA TERCERA: <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span>  renuncia expresamente al fuero de su domicilio y se somete, en caso de conflicto, al Juzgado de Letras Seccional de La Ceiba, Departamento de Atlántida, recibiendo  <span data-field="ElProminenteComprador">&lt;&lt;ElProminenteComprador&gt;&gt;</span> a su entera satisfacción, el inmueble objeto del presente contrato. DECIMOCUARTA: <span data-field="DatosCompradorFinalContrato">&lt;&lt;DatosCompradorFinalContrato&gt;&gt;</span>, que es cierto todo lo expresado por el (la) señor (a) <span data-field="Representante">&lt;&lt;Representante&gt;&gt;</span>, en su condición antes expresada y que por así tenerlo convenido acepta expresamente todo lo estipulado en el presente contrato y se compromete a darle cumplimiento de buena fe, en virtud de lo cual lo suscribimos en original y dos copias de las cuales se entregarán una <span data-field="AlProminenteComprador">&lt;&lt;AlProminenteComprador&gt;&gt;</span> y otra a la oficina de catastro municipal de la Ciudad de la Masica para su inscripción.
-En la ciudad de La Ceiba, departamento de Atlántida a los <span data-field="FechaLetras">&lt;&lt;FechaLetras&gt;&gt;</span> 
+En la ciudad de La Ceiba, departamento de Atlántida a los <span data-field="FechaLetras">&lt;&lt;FechaLetras&gt;&gt;</span>
+  </div>
 
-<div class="signature">
-____________________________________
-<br>
-<span data-field="Representante">&lt;&lt;Representante&gt;&gt;</span>
-<br>
-GERENTE
-</div>
+  <!-- Signatures: Gerente (left) and Estipulante (right) side by side -->
+  <div class="signatures-top">
+    <div class="sig" id="sig-representante">
+      <div class="hrline"></div>
+      <div class="name" data-field="Representante">&lt;&lt;Representante&gt;&gt;</div>
+      <div class="role">GERENTE</div>
+    </div>
 
+    <div class="sig" id="sig-estipulante">
+      <div class="hrline"></div>
+      <div class="name" data-field="FirmaEstipulanteContrato">&lt;&lt;FirmaEstipulanteContrato&gt;&gt;</div>
+      <div class="role">ESTIPULANTE</div>
+    </div>
+  </div>
 
-<div class="signature">
-___________________________________
-<br>
-<span data-field="FirmaEstipulanteContrato">&lt;&lt;FirmaEstipulanteContrato&gt;&gt;</span>
-</div>
+  <!-- Buyers signatures: one line and name for each buyer, and indicate role from ProminenteComprador -->
+  <div id="buyers"></div>
 
-<!-- Bloque de firmas de los compradores: aquí se generarán una línea y el nombre para cada comprador.
-     Se espera que el parámetro "Nombre" contenga los nombres de todos los compradores separados por comas:
-     Ejemplo: Nombre = "Juan Pérez, Ana López, Pedro Díaz"
--->
-<div id="FirmaCompradoresContrato"></div>
+  <script>
+    // List of all fields present between <<[ ... ]>> in the document
+    var FIELD_NAMES = [
+      "Representante","Datosrepresentante","NombreEmpresa","DatosInstrumento","DatosNotario",
+      "DatoCompradorContrato","DatosLotificacionContrato","IdentificacionLotesVentaContrato","DatosLotesVentaContrato",
+      "AlProminenteComprador","ElLosLotesDesccritos","QuienLoReciben","MontoLetras","Monto",
+      "PrimaLetras","Prima","FinanciadoLetras","Financiado","CuotaLetras","Cuota",
+      "PlazoLetras","RecargoLetras","RecargoApp","DatosCompradorFinalContrato","FechaLetras",
+      "FirmaEstipulanteContrato","NombreCompradores","ProminenteComprador"
+    ];
 
-<script>
-  // Lista de todos los campos presentados entre <<[ ... ]>> en el documento
-  var FIELD_NAMES = [
-    "Representante","Datosrepresentante","NombreEmpresa","DatosInstrumento","DatosNotario",
-    "DatoCompradorContrato","DatosLotificacionContrato","IdentificacionLotesVentaContrato","DatosLotesVentaContrato",
-    "AlProminenteComprador","ElLosLotesDesccritos","QuienLoReciben","MontoLetras","Monto",
-    "ElProminenteComprador","PrimaLetras","Prima","FinanciadoLetras","Financiado",
-    "CuotaLetras","Cuota","PlazoLetras","RecargoLetras","RecargoApp",
-    "DatosCompradorFinalContrato","FechaLetras","FirmaEstipulanteContrato",
-    "Nombre","ProminenteComprador"
-  ];
+    // Fields to make bold (names, montos y cantidades)
+    var BOLD_FIELDS = [
+      "Representante","NombreEmpresa","DatoCompradorContrato","DatosCompradorFinalContrato",
+      "AlProminenteComprador","ElProminenteComprador",
+      "MontoLetras","Monto","PrimaLetras","Prima","FinanciadoLetras","Financiado",
+      "CuotaLetras","Cuota","PlazoLetras","RecargoLetras","RecargoApp"
+    ];
 
-  // Obtiene parámetro de URL (devuelve cadena decodificada)
-  function getQueryParam(name) {
-    var params = new URLSearchParams(window.location.search);
-    return params.get(name) || "";
-  }
+    // Return query parameter (decoded)
+    function getQueryParam(name) {
+      var p = new URLSearchParams(window.location.search);
+      return p.get(name) || "";
+    }
 
-  // Escribe texto en todos los elementos que tengan data-field=name
-  function fillFields() {
-    FIELD_NAMES.forEach(function(name) {
-      var value = getQueryParam(name);
-      if (!value) return;
-      // Encuentra todos los elementos con data-field igual a name
-      var els = document.querySelectorAll('[data-field="' + name + '"]');
-      els.forEach(function(el){
-        el.textContent = value;
+    // Escape HTML to avoid injections when setting innerHTML
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Fill all elements that contain data-field attributes matching our fields
+    function fillFields() {
+      FIELD_NAMES.forEach(function(name) {
+        var value = getQueryParam(name);
+        if (!value) return;
+        var els = document.querySelectorAll('[data-field="' + name + '"]');
+        els.forEach(function(el){
+          var safe = escapeHtml(value);
+          if (BOLD_FIELDS.indexOf(name) !== -1) {
+            el.innerHTML = "<strong>" + safe + "</strong>";
+          } else {
+            el.textContent = value;
+          }
+        });
       });
-    });
-    // FechaLetras puede repetirse; handled by same mechanism above
-  }
 
-  // Renderiza bloque de firmas de compradores a partir del campo Nombre
-  // Se espera que Nombre contenga lista separada por comas: "Juan Pérez, Ana López"
-  function renderBuyerSignatures() {
-    var container = document.getElementById("FirmaCompradoresContrato");
-    container.innerHTML = "";
+      // Duplicates: ensure the header/date duplicates are filled if present
+      // (fields already handled if present via data-field)
+    }
 
-    var nombresRaw = getQueryParam("Nombre");
-    if (!nombresRaw) return;
+    // Render buyers signatures
+    // NombreCompradores: expected list of names separated by commas (e.g. "Juan Pérez, Ana López")
+    // ProminenteComprador: text that indicates their role (e.g. "COMPRADOR"), can be a single value or several separated by '|' or commas to match each buyer.
+    function renderBuyers() {
+      var container = document.getElementById("buyers");
+      container.innerHTML = "";
 
-    // Separar por comas (acepta también comas con espacios) y saltos de línea
-    var names = nombresRaw.split(/\s*,\s*|\r?\n/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length > 0; });
+      var rawNames = getQueryParam("NombreCompradores");
+      if (!rawNames) return;
 
-    // Opcional: si hay campos ProminenteComprador con valores por comprador separados por '|' o por comas,
-    // podríamos mapearlos. Por ahora no los mostramos en firmas a menos que se necesite.
-    // Crear una firma (línea) y nombre centrado para cada comprador
-    names.forEach(function(name){
-      var block = document.createElement("div");
-      block.className = "buyer-block";
+      // Split names by comma (allow spaces) or by newline
+      var names = rawNames.split(/\s*,\s*|\r?\n/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length>0; });
 
-      // Espacios para emular formato del original
-      var spacer = document.createElement("div");
-      spacer.innerHTML = "<br><br>";
-      block.appendChild(spacer);
+      var rawRoles = getQueryParam("ProminenteComprador") || "";
+      var roles = [];
+      if (rawRoles.indexOf("|") !== -1) {
+        roles = rawRoles.split("|").map(function(s){ return s.trim(); });
+      } else if (rawRoles.indexOf(",") !== -1) {
+        roles = rawRoles.split(/\s*,\s*/).map(function(s){ return s.trim(); });
+      } else if (rawRoles.trim() !== "") {
+        // same role for all buyers
+        for (var k=0;k<names.length;k++) roles.push(rawRoles.trim());
+      }
 
-      // Línea de firma
-      var hr = document.createElement("div");
-      hr.className = "hrline";
-      block.appendChild(hr);
+      // Ensure roles length matches or default to "COMPRADOR" if empty
+      for (var i=0;i<names.length;i++) {
+        var name = names[i];
+        var role = roles[i] || rawRoles || "COMPRADOR";
 
-      // Nombre centrado debajo de la línea
-      var nameEl = document.createElement("div");
-      nameEl.className = "buyer-name";
-      nameEl.textContent = name;
-      block.appendChild(nameEl);
+        var block = document.createElement("div");
+        block.className = "buyer-block";
 
-      container.appendChild(block);
-    });
-  }
+        // signature line
+        var hr = document.createElement("div");
+        hr.className = "hrline";
+        block.appendChild(hr);
 
-  window.onload = function() {
-    fillFields();
-    renderBuyerSignatures();
-    // Si se desea imprimir automáticamente al abrir, descomentar la siguiente línea:
-    // window.print();
-  };
-</script>
+        // buyer name (bold)
+        var nameEl = document.createElement("div");
+        nameEl.className = "buyer-name";
+        nameEl.textContent = name;
+        block.appendChild(nameEl);
 
+        // role (ProminenteComprador)
+        var roleEl = document.createElement("div");
+        roleEl.className = "buyer-role";
+        roleEl.textContent = role;
+        block.appendChild(roleEl);
+
+        container.appendChild(block);
+      }
+    }
+
+    // On load: fill fields, render buyer signatures, then open print dialog automatically
+    window.onload = function() {
+      fillFields();
+      renderBuyers();
+
+      // Give the browser a very small timeout so rendering completes, then open print dialog
+      setTimeout(function(){ window.print(); }, 500);
+    };
+  </script>
 </body>
 </html>
